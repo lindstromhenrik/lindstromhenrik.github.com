@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<rss version="2.0">
+  <channel>
+    <title>a life in search</title>
+    <link>http://www.lindstromhenrik.com</link>
+    <item>
+      <title>Hierarchical faceting with EPiServer Find</title>
+      <link>http://www.lindstromhenrik.com/hierarchical-faceting-with-episerver-find</link>
+      <pubDate>Tue, 26 Feb 2013 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>A quite common use case of facets is to show a listing of the number of documents in a result for the different categories on the site (quite common is maybe an understatement as this is often the "hello world!" of faceting). A document can occur in maybe one or more categories and this is where your search index really stands out since it doesn&#x2019;t care if you have one or two categories associated with the document it will return your facet in no time anyway. Sometimes your categories have a hierarchical structure that you want to reflect in your facet...</description>
+    </item>
+    <item>
+      <title>Time to live with EPiServer Find</title>
+      <link>http://www.lindstromhenrik.com/time-to-live-with-episerver-find</link>
+      <pubDate>Fri, 15 Feb 2013 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>The latest release of EPiServer Find contains, apart for a number of bug fixes, one new feature and that is the ability to set a time to live value on indexed documents. The value is expressed as a TimeSpan and specifies how long the document should reside in the index before it is automatically deleted. This can be really useful if you index documents continuously (say that you index all items that users currently are looking at on your site) but only what to show the latest (i.e. what users are currently looking at on the site) and don&#x2019;t want to flood your index over time (i.e I don&#x2019;t care what someone looked at yesterday). Under these circumstances the time to live-feature can really help you by doing that dirty cleanup job that we all hate to to do...</description>
+    </item>
+    <item>
+      <title>Random sort with EPiServer Find</title>
+      <link>http://www.lindstromhenrik.com/random-sort-with-episerver-find</link>
+      <pubDate>Thu, 31 Jan 2013 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>I&#x2019;ll continue my series of blog posts today based on &#x201C;questions I&#x2019;ve got&#x201D; with one regarding randomly ordered search results. This can be quite useful if you want to show a subset of a search result and expose the individual result items of the entire result set equally. Say that you for instance have a list campaign products and want to show a limited number of these on the front page but still expose each one of them an equal amount of times to the users...</description>
+    </item>
+    <item>
+      <title>Searching Dictionaries with EPiServer Find</title>
+      <link>http://www.lindstromhenrik.com/searching-dictionaries-with-episerver-find</link>
+      <pubDate>Tue, 22 Jan 2013 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>EPiServer Find has extensive support for indexing all kinds of objects and types. However the support for dictionaries is a bit limited. I got a question a couple of weeks ago regarding how to search/filter on the keys or values of a dictionary (and not on a specific value for a specific key). The default dictionary support in EPiServer Find doesn&#x2019;t support this but it is not that hard to achieve...</description>
+    </item>
+    <item>
+      <title>Adding fuzzy filtering to the EPiServer Find Fluent API</title>
+      <link>http://www.lindstromhenrik.com/adding-fuzzy-filtering-to-the-episerver-find-fluent-api</link>
+      <pubDate>Mon, 17 Sep 2012 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>A few days back I got a question of how to do fuzzy filtering FuzzyQueries and that the core classes in EPiServer.Find had an implementation of this query but that there wasn't a corresponding filter in either Elasticsearch or EPiServer.Find for doing this. However this is quite easily done anyway and it will enable you to do queries like...</description>
+    </item>
+    <item>
+      <title>Debugging Elasticsearch in Eclipse</title>
+      <link>http://www.lindstromhenrik.com/debugging-elasticsearch-in-eclipse</link>
+      <pubDate>Wed, 22 Aug 2012 06:00:00 +0100</pubDate>
+      <category>elasticsearch</category>
+      <description>I&#x2019;m one of those developers that think that debugging an application is a great way of gaining knowledge about its inner workings, not just for finding problems but also for educational purposes. Elasticsearch is one of my favorite open source projects that I sometime have the pleasure of debugging. The Elasticsearch homepage is not that extensive when it comes to building and running Elasticsearch in Eclipse so I&#x2019;m giving a short description of how it is done...</description>
+    </item>
+  </channel>
+</rss>

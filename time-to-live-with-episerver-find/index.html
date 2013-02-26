@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Time to live with EPiServer Find</title>
+    <meta name="description" content="The latest release of EPiServer Find contains, apart for a number of bug fixes, one new feature and that is the ability to set a time to live value on indexed documents. The value is expressed as a TimeSpan and specifies how long the document should reside in the index before it is automatically deleted. This can be really useful if you index documents continuously (say that you index all items that users currently are looking at on your site) but only what to show the latest (i.e. what users are currently looking at on the site) and don’t want to flood your index over time (i.e I don’t care what someone looked at yesterday). Under these circumstances the time to live-feature can really help you by doing that dirty cleanup job that we all hate to to do...">
+    <meta name="author" content="Henrik Lindström">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.47987372846369736" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.300989324986901" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.09766753966645603" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.09228824830998617" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.4376004205696682" type="text/css" rel="stylesheet" media="all">
+
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.1262543604604377"></script>
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/"><i class="icon-search"></i>&nbsp;a life in search</a>
+          <ul class="nav">
+              
+                <li><a href="/archive">Archive</a></li>
+              
+                <li><a href="/tags">Tags</a></li>
+              
+                <li><a href="/categories">Categories</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Time to live with EPiServer Find </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p><span>The latest release of EPiServer Find contains, apart for a number of bug fixes, one new feature and that is the ability to set a time to live-value on indexed documents. The value is expressed as a TimeSpan and specifies how long the document should reside in the index before it is automatically deleted. This can be really useful if you index documents continuously (say that you index all items that users currently are looking at on your site) but only what to show the latest (i.e. what users are currently looking at on the site) and don’t want to flood your index over time (i.e I don’t care what someone looked at yesterday). Under these circumstances the time to live-feature can really help you by doing that dirty cleanup job that we all hate to to do.</span></p>
+
+<h2>How to use time to live</h2>
+
+<p><span>Given an object with a TimeToLive property (or TimeSpan):</span></p>
+
+<pre>
+public class WithTimeToLive
+{
+    [Id]
+    public string Id { get; set; }
+
+    public TimeToLive TimeToLive { get; set; }
+}
+</pre>
+
+<p><span>We first need to configure the client and register the TimeToLive-property for the given object type:</span></p>
+
+<pre>
+client.Conventions.ForInstancesOf<WithTimeToLive>()
+    .TimeToLiveIs(x => x.TimeToLive);
+</pre>
+
+<p><span>When indexing an object we simply register a TimeSpan value to the property specifying how long it should reside in the index:</span></p>
+
+<pre>
+indexObject = new WithTimeToLive()
+    {
+        Id = "123",
+        TimeToLive = new TimeSpan(0, 5, 0)
+    };
+</pre>
+
+<p><span>I hope you may find this useful when making your site awesome with EPiServer Find!</span></p>
+
+<h3>Note:</h3>
+
+<p><span>The granularity of time to live is 60 seconds meaning that the documents will be deleted within 60 seconds of the actual time to live.</span></p>
+
+<p><h3>Updated:</h3>
+<span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
+
+<pre>
+public class WithTimeToLive
+{
+    [Id]
+    public string Id { get; set; }
+    
+    [TimeToLive]
+    public TimeToLive TimeToLive { get; set; }
+}
+</pre>
+
+<p><span>or passed in the index call:</span></p>
+
+<pre>
+client.Index(indexObjext, x => x.TimeToLive = new TimeSpan(0, 5, 0));
+</pre>
+
+    
+    <div class="pagination">
+      <ul>
+        <ul>
+            <li class="prev"><a href="/random-sort-with-episerver-find" title="Random sort with EPiServer Find">&larr; Previous</a></li>
+
+            <li><a href="/archive">Archive</a></li>
+
+            <li class="next"><a href="/hierarchical-faceting-with-episerver-find" title="Hierarchical faceting with EPiServer Find">Next &rarr;</a></li>
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'alifeinsearch'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-02-15</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+      <li>
+        <a href="/categories#EPiServer-ref">EPiServer <span>5</span></a>
+      </li>    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+      <li>
+        <a href="/tags#EPiServer-ref">EPiServer <span>5</span></a>
+      </li>      <li>
+        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>5</span></a>
+      </li>    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Henrik Lindström 2012 
+          with help from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>, <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+          and <a href="http://fortawesome.github.com/Font-Awesome/" target="_blank">Font Awesome</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+    <!-- Google Prettify -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+<!-- end Google Prettify -->
+    <script>
+  var _gaq=[['_setAccount','UA-34278256-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </body>
+</html>

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Searching Dictionaries with EPiServer Find</title>
+    <meta name="description" content="EPiServer Find has extensive support for indexing all kinds of objects and types. However the support for dictionaries is a bit limited. I got a question a couple of weeks ago regarding how to search/filter on the keys or values of a dictionary (and not on a specific value for a specific key). The default dictionary support in EPiServer Find doesn’t support this but it is not that hard to achieve...">
+    <meta name="author" content="Henrik Lindström">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.6714117262594851" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.758030609585433" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.12777437385529533" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.7826552958287565" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.7131430994476181" type="text/css" rel="stylesheet" media="all">
+
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.6180568375710447"></script>
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/"><i class="icon-search"></i>&nbsp;a life in search</a>
+          <ul class="nav">
+              
+                <li><a href="/archive">Archive</a></li>
+              
+                <li><a href="/tags">Tags</a></li>
+              
+                <li><a href="/categories">Categories</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Searching Dictionaries with EPiServer Find </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p><span>EPiServer Find has extensive support for indexing all kinds of objects and types. However the support for dictionaries is a bit limited. I got a question a couple of weeks ago regarding how to search/filter on the keys or values of a dictionary (and not on a specific value for a specific key). The default dictionary support in EPiServer Find doesn’t support this but it is not that hard to achieve.</span></p>
+
+<p><span>There are two steps that we need to do accomplish this. First we need to create a JsonConverter that handles the serialization/deserialization of dictionary objects and extracts the keys and values into separate properties that we later can query on. Thereafter we create an IInterceptContract that allows us to intercept and modify the default JsonDictionaryContract and where we can set our custom dictionary JsonConverter. I will leave out the implementation details but at <a href="https://github.com/x2find/Dictionary2Find">Dictionary2Find</a> you can fetch your own copy of the code.</span></p>
+
+<h2>How to use the Dictionary2Find extension</h2>
+
+<p><span>At startup register the contract interceptor:</span></p>
+
+<pre>
+client.Conventions.ContractResolver.ContractInterceptors.Add(new DictionaryConvention());
+</pre>
+
+<p><span>Given that you have indexed the following object:</span></p>
+
+<pre>
+public class Document 
+{ 
+    public Document() 
+    {
+        MetadataDictionary = new Dictionary<string, string>(); 
+    }
+    
+    public string Name { get; set; }
+
+    public Dictionary<string, string> MetadataDictionary { get; set; } 
+}
+</pre>
+
+<p><span>You can filter on all documents having a specific key</span></p>
+
+<pre>
+client.Search<Document>() 
+    .Filter(x => x.MetadataDictionary.Keys.Match("key")) 
+    .GetResult();
+</pre>
+
+<p><span>You can of course also specify keys/values when using the free text search:  </span></p>
+
+<pre>
+client.Search<Document>() 
+    .For("keyvalue") 
+    .InField(x => x.MetadataDictionary.Keys) 
+    .GetResult();
+</pre>
+
+<p><span>If you want to use these features with the EPiServer CMS integration simply change <i>client</i> in the examples to <i>SearchClient.Instance</i>.</span></p>
+
+<p><span>Dictionary2Find also supports searching on GeoLocation and Attachments in the value-field. Check out the test stories for an example of how to do GeoLocation filtering or see this <a href="https://gist.github.com/4564976">gist</a>.</span></p>
+
+<p><h4>Update</h4>
+<span>The dictionary convention registration has been added as an IClientConventionsExtension:</span></p>
+
+<pre>
+client.Conventions.AddDictionaryConventions();
+</pre> 
+
+    
+    <div class="pagination">
+      <ul>
+        <ul>
+            <li class="prev"><a href="/adding-fuzzy-filtering-to-the-episerver-find-fluent-api" title="Adding fuzzy filtering to the EPiServer Find Fluent API">&larr; Previous</a></li>
+
+            <li><a href="/archive">Archive</a></li>
+
+            <li class="next"><a href="/random-sort-with-episerver-find" title="Random sort with EPiServer Find">Next &rarr;</a></li>
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'alifeinsearch'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2013-01-22</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+      <li>
+        <a href="/categories#EPiServer-ref">EPiServer <span>5</span></a>
+      </li>    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+      <li>
+        <a href="/tags#EPiServer-ref">EPiServer <span>5</span></a>
+      </li>      <li>
+        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>5</span></a>
+      </li>    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Henrik Lindström 2012 
+          with help from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>, <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+          and <a href="http://fortawesome.github.com/Font-Awesome/" target="_blank">Font Awesome</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+    <!-- Google Prettify -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+<!-- end Google Prettify -->
+    <script>
+  var _gaq=[['_setAccount','UA-34278256-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </body>
+</html>
