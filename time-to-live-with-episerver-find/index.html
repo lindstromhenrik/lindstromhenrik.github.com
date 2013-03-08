@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.47987372846369736" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.300989324986901" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.09766753966645603" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.09228824830998617" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.4376004205696682" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.9092992730601489" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.9336383325233479" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.8750186467631359" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.9830910551599301" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.48649005524731737" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.1262543604604377"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.8928823559387565"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -97,8 +97,9 @@ indexObject = new WithTimeToLive()
 
 <p><span>The granularity of time to live is 60 seconds meaning that the documents will be deleted within 60 seconds of the actual time to live.</span></p>
 
-<p><h3>Updated:</h3>
-<span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
+<h3>Updated:</h3>
+
+<p><span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
 
 <pre>
 public class WithTimeToLive
@@ -147,6 +148,9 @@ client.Index(indexObjext, x => x.TimeToLive = new TimeSpan(0, 5, 0));
   </div>
   
   <div class="span4">
+    <h4>By</h4>
+    <div><span><a href="https://profiles.google.com/110888837133566849493" target="_blank" rel="me">Henrik Lindström</a></span></div>
+    <br>
     <h4>Published</h4>
     <div class="date"><span>2013-02-15</span></div>
     <br>

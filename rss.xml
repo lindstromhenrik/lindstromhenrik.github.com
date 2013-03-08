@@ -4,6 +4,13 @@
     <title>a life in search</title>
     <link>http://www.lindstromhenrik.com</link>
     <item>
+      <title>Categorizing using Elasticsearch</title>
+      <link>http://www.lindstromhenrik.com/categorizing-using-elasticsearch</link>
+      <pubDate>Fri, 08 Mar 2013 06:00:00 +0100</pubDate>
+      <category>elasticsearch</category>
+      <description>I'm fortunate to work at a company that once a month have a 'hack day' where we are are allowed to think 'out-of-the' box and try out new ideas. As an advocate of using search for so much more than just the 'search page' I decided to do a small demo of how to use Elasticsearch to do categorization and I wanted to share some of my ideas....</description>
+    </item>
+    <item>
       <title>Hierarchical faceting with EPiServer Find</title>
       <link>http://www.lindstromhenrik.com/hierarchical-faceting-with-episerver-find</link>
       <pubDate>Tue, 26 Feb 2013 06:00:00 +0100</pubDate>

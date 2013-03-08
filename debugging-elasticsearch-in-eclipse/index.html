@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.9159336327989375" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.628749062879028" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.07191448872110007" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.44639311175635643" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.4769535831181023" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.25053773838772286" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.10384772756806149" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.6804358825101565" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.41175427550331734" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.017596213421235962" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.28001810517236214"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.049433306972684776"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -60,13 +60,15 @@
   <div class="span8">
     <p><span>I’m one of those developers that think that debugging an application is a great way of gaining knowledge about its inner workings, not just for finding problems but also for educational purposes. Elasticsearch is one of my favorite open source projects that I sometime have the pleasure of debugging. The <a href="http://www.elasticsearch.org">Elasticsearch homepage</a> is not that extensive when it comes to building and running Elasticsearch in Eclipse so I’m giving a short description of how it is done.</span></p>
 
-<p><h2>Getting the source code</h2>
-<span>There are a number of ways of getting the ES source code from its github repository. Either you can clone the repository directly or fork it (allowing you to commit changes to your forked version) or you can download the zip archive for each released version from the <a href="https://github.com/elasticsearch/elasticsearch/tags">tags section</a>. Either way you should end up with a folder looking like (0.19.x- version):</span></p>
+<h2>Getting the source code</h2>
+
+<p><span>There are a number of ways of getting the ES source code from its github repository. Either you can clone the repository directly or fork it (allowing you to commit changes to your forked version) or you can download the zip archive for each released version from the <a href="https://github.com/elasticsearch/elasticsearch/tags">tags section</a>. Either way you should end up with a folder looking like (0.19.x- version):</span></p>
 
 <p><img src="/assets/media/debugging-elasticsearch-in-eclipse/1.png" /></p>
 
-<p><h2>Importing into your Eclipse workspace</h2>
-<span>Now it is time to open your Eclipse workspace. To import the ES project select File -&gt; Import and select Existing Maven project as import source:</span></p>
+<h2>Importing into your Eclipse workspace</h2>
+
+<p><span>Now it is time to open your Eclipse workspace. To import the ES project select File -&gt; Import and select Existing Maven project as import source:</span></p>
 
 <p><img src="/assets/media/debugging-elasticsearch-in-eclipse/2.png" /></p>
 
@@ -76,8 +78,9 @@
 
 <p><span>Note: Eclipse will not copy the directory into the workspace but instead just reference to it. Therefore I usually copy the project into the workspace folder before importing it.</span></p>
 
-<p><h2>The Error</h2>
-<span>After importing the project eclipse will load its configuration and BOOOM:
+<h2>The Error</h2>
+
+<p><span>After importing the project eclipse will load its configuration and BOOOM:
 maven-dependency-plugin (goals &quot;copy-dependencies&quot;, &quot;unpack&quot;) is not supported by m2e.
 giving you a red x on your project preventing you from building it. The copy-dependencies task is not supported by the m2e plugin but it isn’t needed to build the project either so by adding:</span></p>
 
@@ -114,8 +117,9 @@ giving you a red x on your project preventing you from building it. The copy-dep
 
 <p><span>into your &lt;build&gt; tag in your pom.xml you can ignore <a href="http://stackoverflow.com/questions/8706017/maven-dependency-plugin-goals-copy-dependencies-unpack-is-not-supported-b">this error</a>. After changing your pom.xml you need to update the maven configuration by right clicking on the projects root folder and Maven -&gt; Update Project Configuration… and click ok in the presented dialog.</span></p>
 
-<p><h2>Building</h2>
-<span>So it is time to build the ES source code. Right click on the projects root folder -&gt; Run As -&gt; Maven build… Set ‘package’ as goal and check the skip tests box and click Run:</span></p>
+<h2>Building</h2>
+
+<p><span>So it is time to build the ES source code. Right click on the projects root folder -&gt; Run As -&gt; Maven build… Set ‘package’ as goal and check the skip tests box and click Run:</span></p>
 
 <p><img src="/assets/media/debugging-elasticsearch-in-eclipse/3.png" /></p>
 
@@ -131,8 +135,9 @@ giving you a red x on your project preventing you from building it. The copy-dep
 
 <p><span>Now you have a built version in the target folder (the default output folder).</span></p>
 
-<p><h2>Running ES</h2>
-<span>So to the final step of actually running ES. Locate ElasticSearch.java in org.elasticsearch.bootstrap, or ElasticSearch.java if you don’t want to run ES in the foreground. Right click it and select Run As -&gt; Java Application.</span>
+<h2>Running ES</h2>
+
+<p><span>So to the final step of actually running ES. Locate ElasticSearch.java in org.elasticsearch.bootstrap, or ElasticSearch.java if you don’t want to run ES in the foreground. Right click it and select Run As -&gt; Java Application.</span>
 <span>Voila! Now you have ES running in your Eclipse environment and you can you can play with it in your own little sandbox as you please.</span></p>
 
 <pre>[2012-06-19 11:06:03,938][INFO ][node                     ] [Jessica Jones] {0.19.4}[13732]: initializing ...
@@ -175,19 +180,22 @@ giving you a red x on your project preventing you from building it. The copy-dep
   </div>
   
   <div class="span4">
+    <h4>By</h4>
+    <div><span><a href="https://profiles.google.com/110888837133566849493" target="_blank" rel="me">Henrik Lindström</a></span></div>
+    <br>
     <h4>Published</h4>
     <div class="date"><span>2012-08-22</span></div>
     <br>
     <h4>Categories</h4>
     <ul class="tag_box">
       <li>
-        <a href="/categories#elasticsearch-ref">elasticsearch <span>1</span></a>
+        <a href="/categories#elasticsearch-ref">elasticsearch <span>2</span></a>
       </li>    </ul>
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
       <li>
-        <a href="/tags#elasticsearch-ref">elasticsearch <span>2</span></a>
+        <a href="/tags#elasticsearch-ref">elasticsearch <span>3</span></a>
       </li>      <li>
         <a href="/tags#debugging-ref">debugging <span>1</span></a>
       </li>      <li>
