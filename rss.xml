@@ -8,7 +8,7 @@
       <link>http://www.lindstromhenrik.com/categorizing-using-elasticsearch</link>
       <pubDate>Fri, 08 Mar 2013 06:00:00 +0100</pubDate>
       <category>elasticsearch</category>
-      <description>I'm fortunate to work at a company that once a month have a 'hack day' where we are are allowed to think 'out-of-the' box and try out new ideas. As an advocate of using search for so much more than just the 'search page' I decided to do a small demo of how to use Elasticsearch to do categorization and I wanted to share some of my ideas....</description>
+      <description>I'm fortunate to work at a company that once a month have a 'hack day' when we are allowed to just try out new and crazy ideas. As an advocate of using search for so much more than just the 'search page' I decided to do a small demo of how to use Elasticsearch to do categorization and I wanted to share some of my ideas....</description>
     </item>
     <item>
       <title>Hierarchical faceting with EPiServer Find</title>
