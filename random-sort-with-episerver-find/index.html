@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.7898438051808966" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.014048228013541997" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.8978156897841116" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.7397339679394583" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.9738471972899276" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.8748538490345265" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.03869849790880364" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.2962362988925852" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.21982146314337692" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.12563317448824118" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.46864958488862984"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.7227675254691284"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -65,7 +65,7 @@
 <p><span>Random2Find is a pure query time extension that don’t need to be registered at startup so all you need to do is specifying  OrderRandom on your query:</span></p>
 
 <pre>
-client.Search<Document>()
+client.Search&lt;Document&gt;()
     .OrderRandom()
     .GetResult();
 </pre>
@@ -73,7 +73,7 @@ client.Search<Document>()
 <p><span>OrderRandom can of course also be used in conjunction with another OrderBy-clause if you want to randomly order items within a subset of ordered items:</span> </p>
 
 <pre>
-client.Search<Document>()
+client.Search&lt;Document&gt;()
     .OrderBy(x => x.Name)
     .ThenOrderRandom()
     .GetResult();
@@ -120,15 +120,15 @@ client.Search<Document>()
     <h4>Categories</h4>
     <ul class="tag_box">
       <li>
-        <a href="/categories#EPiServer-ref">EPiServer <span>5</span></a>
+        <a href="/categories#EPiServer-ref">EPiServer <span>6</span></a>
       </li>    </ul>
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
       <li>
-        <a href="/tags#EPiServer-ref">EPiServer <span>5</span></a>
+        <a href="/tags#EPiServer-ref">EPiServer <span>6</span></a>
       </li>      <li>
-        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>5</span></a>
+        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>6</span></a>
       </li>    </ul>
   </div>
 </div>

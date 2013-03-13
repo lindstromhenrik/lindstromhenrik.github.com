@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.9909728923836407" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.48637728584194595" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.48356999393047473" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.06466050918351063" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.22585149927438797" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.30295649826414894" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.6035897942627162" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.7337608156437861" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.8528912099714387" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.3242674203907062" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.8482579012120682"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.29004488289517505"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -77,29 +77,29 @@ public class Document 
 { 
     public Document() 
     {
-        MetadataDictionary = new Dictionary<string, string>(); 
+        MetadataDictionary = new Dictionary&lt;string, string&gt;();
     }
     
     public string Name { get; set; }
 
-    public Dictionary<string, string> MetadataDictionary { get; set; } 
+    public Dictionary&lt;string, string&gt; MetadataDictionary { get; set; } 
 }
 </pre>
 
 <p><span>You can filter on all documents having a specific key</span></p>
 
 <pre>
-client.Search<Document>() 
-    .Filter(x => x.MetadataDictionary.Keys.Match("key")) 
+client.Search&lt;Document&gt;()
+    .Filter(x => x.MetadataDictionary.Keys.Match("key"))
     .GetResult();
 </pre>
 
-<p><span>You can of course also specify keys/values when using the free text search:  </span></p>
+<p><span>You can of course also specify keys/values when using the free text search:</span></p>
 
 <pre>
-client.Search<Document>() 
-    .For("keyvalue") 
-    .InField(x => x.MetadataDictionary.Keys) 
+client.Search&lt;Document&gt;()
+    .For("keyvalue")
+    .InField(x => x.MetadataDictionary.Keys)
     .GetResult();
 </pre>
 
@@ -154,15 +154,15 @@ client.Conventions.AddDictionaryConventions();
     <h4>Categories</h4>
     <ul class="tag_box">
       <li>
-        <a href="/categories#EPiServer-ref">EPiServer <span>5</span></a>
+        <a href="/categories#EPiServer-ref">EPiServer <span>6</span></a>
       </li>    </ul>
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
       <li>
-        <a href="/tags#EPiServer-ref">EPiServer <span>5</span></a>
+        <a href="/tags#EPiServer-ref">EPiServer <span>6</span></a>
       </li>      <li>
-        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>5</span></a>
+        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>6</span></a>
       </li>    </ul>
   </div>
 </div>

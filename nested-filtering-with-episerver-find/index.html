@@ -2,8 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Time to live with EPiServer Find</title>
-    <meta name="description" content="The latest release of EPiServer Find contains, apart for a number of bug fixes, one new feature and that is the ability to set a time to live value on indexed documents. The value is expressed as a TimeSpan and specifies how long the document should reside in the index before it is automatically deleted. This can be really useful if you index documents continuously (say that you index all items that users currently are looking at on your site) but only what to show the latest (i.e. what users are currently looking at on the site) and don’t want to flood your index over time (i.e I don’t care what someone looked at yesterday). Under these circumstances the time to live-feature can really help you by doing that dirty cleanup job that we all hate to to do...">
+    <title>Nested filtering with EPiServer Find</title>
+    <meta name="description" content="Some have already noticed one of the x2find mebers, Nested2Find, that enables nested object mappings and filtering to the EPiServer Find API. I would like to give a short description of what it does and how it can help you in some filtering scenarios..">
     <meta name="author" content="Henrik Lindström">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.7771287095778867" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.037827546463525485" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.13548052237592856" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.0033613644515455565" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.7892367868341673" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.8537807980699693" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.6085549949960537" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.7415370414784342" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.34080858242647327" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.8233574491946021" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.7287061580982782"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.6431454889885921"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -53,80 +53,72 @@
 
       <div class="content">
         <div class="page-header">
-  <h1>Time to live with EPiServer Find </h1>
+  <h1>Nested filtering with EPiServer Find </h1>
 </div>
 
 <div class="row">
   <div class="span8">
-    <p><span>The latest release of EPiServer Find contains, apart for a number of bug fixes, one new feature and that is the ability to set a time to live-value on indexed documents. The value is expressed as a TimeSpan and specifies how long the document should reside in the index before it is automatically deleted. This can be really useful if you index documents continuously (say that you index all items that users currently are looking at on your site) but only what to show the latest (i.e. what users are currently looking at on the site) and don’t want to flood your index over time (i.e I don’t care what someone looked at yesterday). Under these circumstances the time to live-feature can really help you by doing that dirty cleanup job that we all hate to to do.</span></p>
+    <p><span>Some have already noticed one of the x2find mebers, <a href="https://github.com/x2find/Nested2Find">Nested2Find</a>, that enables nested object mappings and filtering to the EPiServer Find API. I would like to give a short description of what it does and how it can help you in some filtering scenarios.</span></p>
 
-<h2>How to use time to live</h2>
+<p><span>Sometimes we need to be able to filter documents based on matching a specific object in a lists of complex objects on the document. Say for instance that we have documents that have a list of all authors that have contributed. Authors that all have a set of properties such as name and address. We then want to find all documents where one of the authors match a specific set of criterias, say all documents that have a swedish author named Henrik. This is what Nested2Find enables you to do. It lets you define nested lists of complex objects on a document for which you then later can specify a matching criteria when querying.</span></p>
 
-<p><span>Given an object with a TimeToLive property (or TimeSpan):</span></p>
+<h2>How to use the Nested2Find extension</h2>
+
+<p><span>Add the nested conventions to the conventions:</span></p>
 
 <pre>
-public class WithTimeToLive
+client.Conventions.AddNestedConventions();
+</pre>
+
+<p><span>Create an object containing a NestedList&lt;&gt; of objects (NestedList&lt;&gt; is simply a typed List&lt;&gt;):</span></p>
+
+<pre>
+public class Document
 {
-    [Id]
-    public string Id { get; set; }
-
-    public TimeToLive TimeToLive { get; set; }
-}
-</pre>
-
-<p><span>We first need to configure the client and register the TimeToLive-property for the given object type:</span></p>
-
-<pre>
-client.Conventions.ForInstancesOf<WithTimeToLive>()
-    .TimeToLiveIs(x => x.TimeToLive);
-</pre>
-
-<p><span>When indexing an object we simply register a TimeSpan value to the property specifying how long it should reside in the index:</span></p>
-
-<pre>
-indexObject = new WithTimeToLive()
+    public Document()
     {
-        Id = "123",
-        TimeToLive = new TimeSpan(0, 5, 0)
-    };
-</pre>
+        Authors = new NestedList&lt;Author&gt;();
+    }
+    public string Title { get; set; }
+    public NestedList&lt;Author&gt; Authors { get; set; }
+    public string Body { get; set; }
+}
 
-<p><span>I hope you may find this useful when making your site awesome with EPiServer Find!</span></p>
-
-<h3>Note:</h3>
-
-<p><span>The granularity of time to live is 60 seconds meaning that the documents will be deleted within 60 seconds of the actual time to live.</span></p>
-
-<h3>Updated:</h3>
-
-<p><span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
-
-<pre>
-public class WithTimeToLive
+public class Author
 {
-    [Id]
-    public string Id { get; set; }
-    
-    [TimeToLive]
-    public TimeToLive TimeToLive { get; set; }
+    public string Name { get; set; }
+    public string Address { get; set; }
+    public string Country { get; set; }
 }
 </pre>
 
-<p><span>or passed in the index call:</span></p>
+<p><span>Index and start filtering:</span></p>
 
 <pre>
-client.Index(indexObjext, x => x.TimeToLive = new TimeSpan(0, 5, 0));
+result = client.Search&lt;Document&gt;()
+             .Filter(x => x.Authors, p => p.Name.Match("Henrik") &amp; p.Country.Match("Sweden"))
+             .GetResult();
 </pre>
+
+<p><span>or:<span></p>
+
+<pre>
+result = client.Search&lt;Document&gt;()
+            .Filter(x => x.Authors.MatchItem(p => p.FirstName.Match("Henrik") &amp; p.Country.Match("Sweden")))
+            .GetResult();
+</pre>
+
+<p><sapn>I hope you may find this useful when making your site awesome with EPiServer Find!</span></p>
 
     
     <div class="pagination">
       <ul>
         <ul>
-            <li class="prev"><a href="/random-sort-with-episerver-find" title="Random sort with EPiServer Find">&larr; Previous</a></li>
+            <li class="prev"><a href="/categorizing-using-elasticsearch" title="Categorizing using Elasticsearch">&larr; Previous</a></li>
 
             <li><a href="/archive">Archive</a></li>
 
-            <li class="next"><a href="/hierarchical-faceting-with-episerver-find" title="Hierarchical faceting with EPiServer Find">Next &rarr;</a></li>
+            <li class="next disabled"><a>Next &rarr;</a>
         </ul>
       </ul>
     </div>
@@ -152,7 +144,7 @@ client.Index(indexObjext, x => x.TimeToLive = new TimeSpan(0, 5, 0));
     <div><span><a href="https://profiles.google.com/110888837133566849493" target="_blank" rel="me">Henrik Lindström</a></span></div>
     <br>
     <h4>Published</h4>
-    <div class="date"><span>2013-02-15</span></div>
+    <div class="date"><span>2013-03-14</span></div>
     <br>
     <h4>Categories</h4>
     <ul class="tag_box">
