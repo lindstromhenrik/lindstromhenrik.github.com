@@ -6,7 +6,7 @@
     <item>
       <title>Nested filtering with EPiServer Find</title>
       <link>http://www.lindstromhenrik.com/nested-filtering-with-episerver-find</link>
-      <pubDate>Thu, 14 Mar 2013 06:00:00 +0100</pubDate>
+      <pubDate>Fri, 15 Mar 2013 06:00:00 +0100</pubDate>
       <category>EPiServer</category>
       <description>Some have already noticed one of the x2find mebers, Nested2Find, that enables nested object mappings and filtering to the EPiServer Find API. I would like to give a short description of what it does and how it can help you in some filtering scenarios..</description>
     </item>

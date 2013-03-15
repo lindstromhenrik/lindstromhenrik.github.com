@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.7771287095778867" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.037827546463525485" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.13548052237592856" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.0033613644515455565" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.7892367868341673" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.538555122869407" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.32822885811490243" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.9886629109626486" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.9760306460159525" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.40016446523930693" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.7287061580982782"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.4434461219587619"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -77,7 +77,7 @@ public class WithTimeToLive
 <p><span>We first need to configure the client and register the TimeToLive-property for the given object type:</span></p>
 
 <pre>
-client.Conventions.ForInstancesOf<WithTimeToLive>()
+client.Conventions.ForInstancesOf&lt;WithTimeToLive&gt;()
     .TimeToLiveIs(x => x.TimeToLive);
 </pre>
 
@@ -97,9 +97,8 @@ indexObject = new WithTimeToLive()
 
 <p><span>The granularity of time to live is 60 seconds meaning that the documents will be deleted within 60 seconds of the actual time to live.</span></p>
 
-<h3>Updated:</h3>
-
-<p><span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
+<p><h3>Updated:</h3>
+<span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
 
 <pre>
 public class WithTimeToLive
