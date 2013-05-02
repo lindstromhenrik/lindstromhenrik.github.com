@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.538555122869407" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.32822885811490243" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.9886629109626486" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.9760306460159525" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.40016446523930693" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.5848470474326263" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.5206489294156237" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.8978810368893007" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.7890736997283019" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.25445834668949796" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.4434461219587619"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.722264172732642"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -57,7 +57,7 @@
 </div>
 
 <div class="row">
-  <div class="span8">
+  <div class="span10">
     <p><span>The latest release of EPiServer Find contains, apart for a number of bug fixes, one new feature and that is the ability to set a time to live-value on indexed documents. The value is expressed as a TimeSpan and specifies how long the document should reside in the index before it is automatically deleted. This can be really useful if you index documents continuously (say that you index all items that users currently are looking at on your site) but only what to show the latest (i.e. what users are currently looking at on the site) and don’t want to flood your index over time (i.e I don’t care what someone looked at yesterday). Under these circumstances the time to live-feature can really help you by doing that dirty cleanup job that we all hate to to do.</span></p>
 
 <h2>How to use time to live</h2>
@@ -97,8 +97,9 @@ indexObject = new WithTimeToLive()
 
 <p><span>The granularity of time to live is 60 seconds meaning that the documents will be deleted within 60 seconds of the actual time to live.</span></p>
 
-<p><h3>Updated:</h3>
-<span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
+<h3>Updated:</h3>
+
+<p><span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
 
 <pre>
 public class WithTimeToLive
@@ -146,7 +147,7 @@ client.Index(indexObjext, x => x.TimeToLive = new TimeSpan(0, 5, 0));
 
   </div>
   
-  <div class="span4">
+  <div class="span2">
     <h4>By</h4>
     <div><span><a href="https://profiles.google.com/110888837133566849493" target="_blank" rel="me">Henrik Lindström</a></span></div>
     <br>
@@ -156,15 +157,15 @@ client.Index(indexObjext, x => x.TimeToLive = new TimeSpan(0, 5, 0));
     <h4>Categories</h4>
     <ul class="tag_box">
       <li>
-        <a href="/categories#EPiServer-ref">EPiServer <span>6</span></a>
+        <a href="/categories#EPiServer-ref">EPiServer <span>7</span></a>
       </li>    </ul>
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
       <li>
-        <a href="/tags#EPiServer-ref">EPiServer <span>6</span></a>
+        <a href="/tags#EPiServer-ref">EPiServer <span>7</span></a>
       </li>      <li>
-        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>6</span></a>
+        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>7</span></a>
       </li>    </ul>
   </div>
 </div>

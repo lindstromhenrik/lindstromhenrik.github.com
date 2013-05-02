@@ -13,13 +13,13 @@
 
     <!-- Le styles -->
     <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
-    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.2074796752444089" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/font-awesome.css?0.05764189538548847" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.09727313914013636" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/stylesheets/style.css?0.7188821972295365" type="text/css" rel="stylesheet" media="all">
-<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.10171455407051544" type="text/css" rel="stylesheet" media="all">
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.03178515404239857" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.6883739106021983" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.1364735543041209" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.3150651465298002" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.9544729780250212" type="text/css" rel="stylesheet" media="all">
 
-<script src="/assets/twitter/javascripts/jquery.tweet.js?0.021382332630401457"></script>
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.4673175703412408"></script>
  
 
     <!-- Le fav and touch icons -->
@@ -57,7 +57,7 @@
 </div>
 
 <div class="row">
-  <div class="span8">
+  <div class="span10">
     <p><span>EPiServer Find has extensive support for indexing all kinds of objects and types. However the support for dictionaries is a bit limited. I got a question a couple of weeks ago regarding how to search/filter on the keys or values of a dictionary (and not on a specific value for a specific key). The default dictionary support in EPiServer Find doesn’t support this but it is not that hard to achieve.</span></p>
 
 <p><span>There are two steps that we need to do accomplish this. First we need to create a JsonConverter that handles the serialization/deserialization of dictionary objects and extracts the keys and values into separate properties that we later can query on. Thereafter we create an IInterceptContract that allows us to intercept and modify the default JsonDictionaryContract and where we can set our custom dictionary JsonConverter. I will leave out the implementation details but at <a href="https://github.com/x2find/Dictionary2Find">Dictionary2Find</a> you can fetch your own copy of the code.</span></p>
@@ -107,8 +107,9 @@ client.Search&lt;Document&gt;()
 
 <p><span>Dictionary2Find also supports searching on GeoLocation and Attachments in the value-field. Check out the test stories for an example of how to do GeoLocation filtering or see this <a href="https://gist.github.com/4564976">gist</a>.</span></p>
 
-<p><h4>Update</h4>
-<span>The dictionary convention registration has been added as an IClientConventionsExtension:</span></p>
+<h4>Update</h4>
+
+<p><span>The dictionary convention registration has been added as an IClientConventionsExtension:</span></p>
 
 <pre>
 client.Conventions.AddDictionaryConventions();
@@ -143,7 +144,7 @@ client.Conventions.AddDictionaryConventions();
 
   </div>
   
-  <div class="span4">
+  <div class="span2">
     <h4>By</h4>
     <div><span><a href="https://profiles.google.com/110888837133566849493" target="_blank" rel="me">Henrik Lindström</a></span></div>
     <br>
@@ -153,15 +154,15 @@ client.Conventions.AddDictionaryConventions();
     <h4>Categories</h4>
     <ul class="tag_box">
       <li>
-        <a href="/categories#EPiServer-ref">EPiServer <span>6</span></a>
+        <a href="/categories#EPiServer-ref">EPiServer <span>7</span></a>
       </li>    </ul>
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
       <li>
-        <a href="/tags#EPiServer-ref">EPiServer <span>6</span></a>
+        <a href="/tags#EPiServer-ref">EPiServer <span>7</span></a>
       </li>      <li>
-        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>6</span></a>
+        <a href="/tags#EPiServer.Find-ref">EPiServer.Find <span>7</span></a>
       </li>    </ul>
   </div>
 </div>

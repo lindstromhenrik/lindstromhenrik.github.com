@@ -4,6 +4,13 @@
     <title>a life in search</title>
     <link>http://www.lindstromhenrik.com</link>
     <item>
+      <title>Indexing only referenced VPP-files with EPiServer Find</title>
+      <link>http://www.lindstromhenrik.com/indexing-only-referenced-vpp-files-with-episerver-find</link>
+      <pubDate>Thu, 02 May 2013 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>The EPiServer Find CMS integration does not index any files stored in the VPP by default. A convention is included in the integration that index files visible in the file manager and it is enabled by setting the VisibleInFilemanagerVPPIndexingConvention on the FilieIndexer conventions...</description>
+    </item>
+    <item>
       <title>Nested filtering with EPiServer Find</title>
       <link>http://www.lindstromhenrik.com/nested-filtering-with-episerver-find</link>
       <pubDate>Fri, 15 Mar 2013 06:00:00 +0100</pubDate>
