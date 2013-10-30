@@ -4,6 +4,13 @@
     <title>a life in search</title>
     <link>http://www.lindstromhenrik.com</link>
     <item>
+      <title>Language detection using Elasticsearch</title>
+      <link>http://www.lindstromhenrik.com/language-detection-using-elasticsearch</link>
+      <pubDate>Wed, 30 Oct 2013 06:00:00 +0100</pubDate>
+      <category>elasticsearch</category>
+      <description>A couple of weeks ago I had the privilege to speak at the Elasticsearch Meetup in Stockholm where I did show a slightly tweaked version of the 'language categorizer' I did write about a couple of months ago and would like to share the changes I did (the naive approach wasn&#x2019;t  accurate enough to be presented live in public ;-))....</description>
+    </item>
+    <item>
       <title>Indexing only referenced VPP-files with EPiServer Find</title>
       <link>http://www.lindstromhenrik.com/indexing-only-referenced-vpp-files-with-episerver-find</link>
       <pubDate>Thu, 02 May 2013 06:00:00 +0100</pubDate>
@@ -22,7 +29,7 @@
       <link>http://www.lindstromhenrik.com/categorizing-using-elasticsearch</link>
       <pubDate>Fri, 08 Mar 2013 06:00:00 +0100</pubDate>
       <category>elasticsearch</category>
-      <description>I'm fortunate to work at a company that once a month have a 'hack day' when we are allowed to just try out new and crazy ideas. As an advocate of using search for so much more than just the 'search page' I decided to do a small demo of how to use Elasticsearch to do categorization and I wanted to share some of my ideas....</description>
+      <description>I'm fortunate to work at a company that once a month have a 'hack day' when we are allowed to just try out new and crazy ideas. As an advocate of using search for so much more than just the 'search page' I decided to do a small demo of how to use Elasticsearch to do categorization and I wanted to share some of my ideas...</description>
     </item>
     <item>
       <title>Hierarchical faceting with EPiServer Find</title>
