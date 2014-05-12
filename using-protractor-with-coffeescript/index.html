@@ -192,7 +192,7 @@ describe('<e2e>', () ->
         it('should login and redirect to the dashboard with valid user credentials', () ->
             loginPage
                 .setUserName('john.doe@acme.com')
-                .setPassword(‘donttellanyone’)
+                .setPassword('donttellanyone')
                 .submit()
             browser.waitForAngular()
             
