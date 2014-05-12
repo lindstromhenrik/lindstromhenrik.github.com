@@ -27,20 +27,19 @@
   </head>
 
   <body>
-
-    <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="/"><i class="icon-search"></i>&nbsp;{{ site.title }}</a>
-          <ul class="nav">
-            {{# site.navigation?to_pages }}
-              {{> pages_list }}
-            {{/ site.navigation?to_pages }}
-          </ul>
-        </div>
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href="/"><i class="icon-search"></i>&nbsp;{{ site.title }}</a>
+        <ul class="nav">
+          {{# site.navigation?to_pages }}
+            {{> pages_list }}
+          {{/ site.navigation?to_pages }}
+        </ul>
       </div>
     </div>
-
+  </div>
+  <div class="background">
     <div class="container">
 
       <div class="content">
@@ -58,5 +57,6 @@
     {{{ jquery_tweet }}}
     {{{ google_prettify }}}
     {{{ analytics }}}
+  </div>
   </body>
 </html>

@@ -4,6 +4,13 @@
     <title>a life in search</title>
     <link>http://www.lindstromhenrik.com</link>
     <item>
+      <title>Using Protractor with CoffeeScript</title>
+      <link>http://www.lindstromhenrik.com/using-protractor-with-coffeescript</link>
+      <pubDate>Mon, 12 May 2014 06:00:00 +0100</pubDate>
+      <category>angularjs</category>
+      <description>I&#x2019;ve been playing around with AngularJS  for the last couple of weeks during my spare time while being on paternity leave (read late at night). I really like the framework and last night I came across Protractor, the end to end testing framework, and for the first time I think I saw some light in the the UI-testing-tunnel and thought I should share some ideas in a couple of posts...</description>
+    </item>
+    <item>
       <title>Language detection using Elasticsearch</title>
       <link>http://www.lindstromhenrik.com/language-detection-using-elasticsearch</link>
       <pubDate>Wed, 30 Oct 2013 06:00:00 +0100</pubDate>
