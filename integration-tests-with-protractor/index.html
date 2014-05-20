@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Integration tests with Protractor</title>
+    <meta name="description" content="After playing around with Protractor for a while I wanted to create some integration tests where I would bootstrap the entire server/db before each test to get a consistent state to start from in each test. The problem is that we often have to wait for everything to be setup before running the tests...">
+    <meta name="author" content="Henrik Lindström">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <script language="javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js" type="text/javascript"></script>
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css?0.47443224104435355" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/font-awesome.css?0.7509587385696748" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/jquery.tweet.css?0.007727410506528587" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css?0.6850806932760055" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css?0.541364733035821" type="text/css" rel="stylesheet" media="all">
+
+<script src="/assets/twitter/javascripts/jquery.tweet.js?0.05581580053829882"></script>
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="brand" href="/"><i class="icon-search"></i>&nbsp;a life in search</a>
+        <ul class="nav">
+            
+              <li><a href="/archive">Archive</a></li>
+            
+              <li><a href="/tags">Tags</a></li>
+            
+              <li><a href="/categories">Categories</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="background">
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Integration tests with Protractor </h1>
+</div>
+
+<div class="row">
+  <div class="span10">
+    <p><span>After playing around with Protractor for a while I wanted to create some integration tests where I would bootstrap the entire server/database before each test to get a consistent state to start from in each test. The problem is that we often have to wait for everything to setup before running the tests. Using Jasmine as test framework the obvious solution for this would be to use the async callback in <strong>beforeEach</strong> do something like:</span></p>
+
+<pre>
+beforeEach((done) ->
+    server.start(() ->
+        done()
+    )
+)
+</pre>
+
+<p><span>and <strong>server.start</strong>:</span></p>
+
+<pre>
+start = (done) ->
+    server = spawn('coffee', [ 'server.coffee' ])
+    server.stdout.on('data', (data) ->
+        if data.toString() == 'App started\n'
+            done()
+    )
+</pre>
+
+<p><span>Simply put, the server spawns a new process that starts our server using the command: <strong>&#39;coffee server.coffee&#39;</strong> and then listen to stdout for the log output <strong>&#39;App started\n&#39;</strong> and then issues the callback <strong>done</strong> (this is of course purely an example).</span></p>
+
+<p><span>The problem is that Protractor overrides the async callback in <strong>beforeEach</strong> and never waits for our server to actually start. The reason is that Protractor helps you with handling all the async calls of WebdriverJS and creates its own <a href="https://github.com/angular/protractor/blob/master/docs/control-flow.md">control flow</a> using <a href="https://github.com/kriskowal/q">promises</a> that overrides Jasmines async callback. Instead of using the Jasmine async callback we need to make the <strong>server.start</strong> return a <strong>promise</strong> and then add that to the Protractor control flow.</span></p>
+
+<p><span>First we need to import <strong>q</strong> (the Promise module) into our project using:</span></p>
+
+<pre>
+npm install q
+</pre>
+
+<p><span>Then we modify our <strong>server.start</strong> to return a promise instead of using the callback:</span></p>
+
+<pre>
+Q = require('q')
+
+start = () ->
+    deferred = Q.defer()
+    server = spawn('coffee', [ 'server.coffee' ])
+    server.stdout.on('data', (data) ->
+        if data.toString() == 'App started\n'
+            deferred.resolve()
+    )
+
+    return deferred.promise
+</pre>
+
+<p><span>Finally we add that to the Protractor control flow in the <strong>beforeEach</strong> function:</span></p>
+
+<pre>
+beforeEach(() ->
+    protractor.promise.controlFlow().execute(() ->
+        return server.start()
+    )
+)
+</pre>
+
+<p><span>Voila! Now Protractor waits for our server to actually start before continuing with running the tests. Using this approach we can create integration tests that bootstraps the server before each test and completely isolates tests from each other enabling us to create better test scenarios that don’t depend on what order the tests are runned.</span></p>
+
+    
+    <div class="pagination">
+      <ul>
+        <ul>
+            <li class="prev"><a href="/using-protractor-with-coffeescript" title="Using Protractor with CoffeeScript">&larr; Previous</a></li>
+
+            <li><a href="/archive">Archive</a></li>
+
+            <li class="next disabled"><a>Next &rarr;</a>
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    <div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'alifeinsearch'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span2">
+    <h4>By</h4>
+    <div><span><a href="https://profiles.google.com/110888837133566849493" target="_blank" rel="me">Henrik Lindström</a></span></div>
+    <br>
+    <h4>Published</h4>
+    <div class="date"><span>2014-05-21</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+      <li>
+        <a href="/categories#angularjs-ref">angularjs <span>2</span></a>
+      </li>    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+      <li>
+        <a href="/tags#angularjs-ref">angularjs <span>2</span></a>
+      </li>      <li>
+        <a href="/tags#testing-ref">testing <span>2</span></a>
+      </li>    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Henrik Lindström 2012 
+          with help from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>, <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+          and <a href="http://fortawesome.github.com/Font-Awesome/" target="_blank">Font Awesome</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+    
+    <!-- Google Prettify -->
+<script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+<!-- end Google Prettify -->
+    <script>
+  var _gaq=[['_setAccount','UA-34278256-1'],['_trackPageview']];
+  (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+  g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+  s.parentNode.insertBefore(g,s)}(document,'script'));
+</script>
+  </div>
+  </body>
+</html>

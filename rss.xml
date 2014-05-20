@@ -4,6 +4,13 @@
     <title>a life in search</title>
     <link>http://www.lindstromhenrik.com</link>
     <item>
+      <title>Integration tests with Protractor</title>
+      <link>http://www.lindstromhenrik.com/integration-tests-with-protractor</link>
+      <pubDate>Wed, 21 May 2014 06:00:00 +0100</pubDate>
+      <category>angularjs</category>
+      <description>After playing around with Protractor for a while I wanted to create some integration tests where I would bootstrap the entire server/db before each test to get a consistent state to start from in each test. The problem is that we often have to wait for everything to be setup before running the tests...</description>
+    </item>
+    <item>
       <title>Using Protractor with CoffeeScript</title>
       <link>http://www.lindstromhenrik.com/using-protractor-with-coffeescript</link>
       <pubDate>Mon, 12 May 2014 06:00:00 +0100</pubDate>
