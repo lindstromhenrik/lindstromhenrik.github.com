@@ -4,11 +4,18 @@
     <title>a life in search</title>
     <link>http://www.lindstromhenrik.com</link>
     <item>
+      <title>Facet filtering with EPiServer Find</title>
+      <link>http://www.lindstromhenrik.com/facet-filtering-with-episerver-find</link>
+      <pubDate>Thu, 02 Jun 2016 06:00:00 +0100</pubDate>
+      <category>EPiServer</category>
+      <description>Sometimes you want to have a facet calculated on just a subset of the result or have multiple facets each being calculated on a different subset of the result...</description>
+    </item>
+    <item>
       <title>Integration tests with Protractor</title>
       <link>http://www.lindstromhenrik.com/integration-tests-with-protractor</link>
       <pubDate>Wed, 21 May 2014 06:00:00 +0100</pubDate>
       <category>angularjs</category>
-      <description>After playing around with Protractor for a while I wanted to create some integration tests where I would bootstrap the entire server/db before each test to get a consistent state to start from in each test. The problem is that we often have to wait for everything to be setup before running the tests...</description>
+      <description>After playing around with Protractor for a while I wanted to create some integration tests where I would bootstrap the entire server/database before each test to get a consistent state to start from in each test. The problem is that we often have to wait for everything to be setup before running the tests...</description>
     </item>
     <item>
       <title>Using Protractor with CoffeeScript</title>
@@ -22,7 +29,7 @@
       <link>http://www.lindstromhenrik.com/language-detection-using-elasticsearch</link>
       <pubDate>Wed, 30 Oct 2013 06:00:00 +0100</pubDate>
       <category>elasticsearch</category>
-      <description>A couple of weeks ago I had the privilege to speak at the Elasticsearch Meetup in Stockholm where I did show a slightly tweaked version of the 'language categorizer' I did write about a couple of months ago and would like to share the changes I did (the naive approach wasn&#x2019;t  accurate enough to be presented live in public ;-))....</description>
+      <description>A couple of weeks ago I had the privilege to speak at the Elasticsearch Meetup in Stockholm where I did show a slightly tweaked version of the 'language categorizer' I did write about a couple of months ago and would like to share the changes I did (the naive approach wasn&#x2019;t  accurate enough to be presented live in public ;-))...</description>
     </item>
     <item>
       <title>Indexing only referenced VPP-files with EPiServer Find</title>
@@ -36,7 +43,7 @@
       <link>http://www.lindstromhenrik.com/nested-filtering-with-episerver-find</link>
       <pubDate>Fri, 15 Mar 2013 06:00:00 +0100</pubDate>
       <category>EPiServer</category>
-      <description>Some have already noticed one of the x2find mebers, Nested2Find, that enables nested object mappings and filtering to the EPiServer Find API. I would like to give a short description of what it does and how it can help you in some filtering scenarios..</description>
+      <description>Some have already noticed one of the x2find mebers, Nested2Find, that enables nested object mappings and filtering to the EPiServer Find API. I would like to give a short description of what it does and how it can help you in some filtering scenarios...</description>
     </item>
     <item>
       <title>Categorizing using Elasticsearch</title>
