@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Using Protractor with CoffeeScript | a life in search</title>
+<meta name="generator" content="Jekyll v3.8.3" />
+<meta property="og:title" content="Using Protractor with CoffeeScript" />
+<meta name="author" content="Henrik Lindström" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I’ve been playing around with AngularJS for the last couple of weeks during my spare time while being on paternity leave (read late at night). I really like the framework and last night I came across Protractor, the end to end testing framework, and for the first time I think I saw some light in the the UI-testing-tunnel and thought I should share some ideas in a couple of posts…" />
+<meta property="og:description" content="I’ve been playing around with AngularJS for the last couple of weeks during my spare time while being on paternity leave (read late at night). I really like the framework and last night I came across Protractor, the end to end testing framework, and for the first time I think I saw some light in the the UI-testing-tunnel and thought I should share some ideas in a couple of posts…" />
+<link rel="canonical" href="https://www.lindstromhenrik.com/using-protractor-with-coffescript/" />
+<meta property="og:url" content="https://www.lindstromhenrik.com/using-protractor-with-coffescript/" />
+<meta property="og:site_name" content="a life in search" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2014-05-12T00:00:00+02:00" />
+<script type="application/ld+json">
+{"description":"I’ve been playing around with AngularJS for the last couple of weeks during my spare time while being on paternity leave (read late at night). I really like the framework and last night I came across Protractor, the end to end testing framework, and for the first time I think I saw some light in the the UI-testing-tunnel and thought I should share some ideas in a couple of posts…","author":{"@type":"Person","name":"Henrik Lindström"},"@type":"BlogPosting","url":"https://www.lindstromhenrik.com/using-protractor-with-coffescript/","headline":"Using Protractor with CoffeeScript","dateModified":"2014-05-12T00:00:00+02:00","datePublished":"2014-05-12T00:00:00+02:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.lindstromhenrik.com/using-protractor-with-coffescript/"},"@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="https://www.lindstromhenrik.com/feed.xml" title="a life in search" /><script>
+    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+    ga('create', 'UA-34278256-1', 'auto');
+    ga('send', 'pageview');
+    ga('set', 'anonymizeIp', true);
+    </script></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">a life in search</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post h-entry" itemscope itemtype="http://schema.org/BlogPosting">
+
+  <header class="post-header">
+    <h1 class="post-title p-name" itemprop="name headline">Using Protractor with CoffeeScript</h1>
+    <p class="post-meta">
+      <time class="dt-published" datetime="2014-05-12T00:00:00+02:00" itemprop="datePublished">May 12, 2014
+      </time></p>
+  </header>
+
+  <div class="post-content e-content" itemprop="articleBody">
+    <p><span>I’ve been playing around with AngularJS  for the last couple of weeks during my spare time while being on paternity leave (read: late at night). I really like the framework and last night I came across Protractor, the end to end testing framework, and for the first time I think I saw some light in the the UI-testing-tunnel and thought I should share some ideas in a couple of posts. First I’ll start with how to use Protractor with CoffeScript and how to get a nice fluent syntax in your testing scenarios (thanks to <a href="https://github.com/angular/protractor/issues/275#issuecomment-29106082">cyranix</a> for getting me inspired).</span></p>
+
+<h2>Using Protractor with CoffeeScript</h2>
+
+<p><span>I like using CoffeScript (even though I’m kind of verbose when I use it compared to most as I like keeping the parentheses) and thought it would be great if I could write my Page Objects as CoffeScript classes and chain the functions giving me a fluent syntax like:</span></p>
+
+<pre>
+startPage.
+    .clickLogin()
+            .setUserName('john.doe@acme.com')
+            .setPassword('donttellanyone')
+            .submit()
+    browser.waitForAngular()
+    
+    expect(browser.getLocationAbsUrl()).toMatch('/app/#!/dashboard')
+</pre>
+
+<p><span>So, how do we do this? First we need to register CoffeScript in the protractor configuration to be able to use it in our scenarios:</span></p>
+
+<p><span><strong>protractor-conf.js</strong></span></p>
+
+<pre>
+exports.config = {
+    allScriptsTimeout: 11000,
+
+    specs: [
+        'e2e/*.scenarios.coffee'
+    ],
+
+    capabilities: {
+        'browserName': 'chrome'
+    },
+
+    baseUrl: 'http://localhost:10000/app',
+
+    framework: 'jasmine',
+
+    jasmineNodeOpts: {
+        defaultTimeoutInterval: 30000
+    }
+};
+</pre>
+
+<p><span>Note: If you don’t have CoffeScript installed grab it with:</span></p>
+
+<pre>npm install coffee-script</pre>
+
+<p><span>Next we need to create our Page Objects and we will start with the <strong>start page</strong>:</span></p>
+
+<p><span><strong>start_page.coffee</strong></span></p>
+
+<pre>
+LoginPage = require('./login_page')
+
+class StartPage
+    constructor: -&gt;
+        @loginLink = element(By.id('loginLink'))
+
+    get: -&gt;
+        browser.get('app/#!/')
+        return @
+
+    clickLogin: -&gt;
+        @loginLink.click()
+        browser.waitForAngular()
+        return new LoginPage()
+
+module.exports = StartPage
+</pre>
+
+<p><span>We grab the login link element in the constructor (I’ve just set the id in the html view so that it is easy to get hold of in the tests and making the test a bit more robust if I decide to move the login link). When someone then clicks login we click the link and wait for angular to complete the request and then we return the Page Object for the <strong>login page</strong>.<span></span></span></p>
+
+<p><span>The Page Object for the <strong>login page</strong> looks similar in structure but have a username and password field that the user can fill out (Here I use the <strong>By.model</strong> to get hold of the input fields for the username and password. Also note that I use return @ to return <strong>this</strong> in the functions to make it chainable):</span></p>
+
+<p><span><strong>login_page.coffee</strong></span></p>
+
+<pre>
+LoginPage = require('./login_page')
+
+class LoginPage
+    constructor: -&gt;
+        @username = element(By.model('user.name'))
+        @password = element(By.model('user.password'))
+        @loginButton = element(By.id('loginButton'))
+        @errorMessage = element(By.id('loginErrorMessage'))
+
+    get: -&gt;
+        browser.get('app/#!/auth/login')
+        return @
+
+    getErrorMessage: -&gt;
+        return @errorMessage.getText()
+
+    setUserName: (text) -&gt;
+        @username.sendKeys(text)
+        return @
+
+    clearUserName: -&gt;
+        @username.clear()
+        return @
+
+    setPassword: (text) -&gt;
+        @password.sendKeys(text)
+        return @
+
+    clearPassword: -&gt;
+        @password.clear()
+        return @
+
+    submit: -&gt;
+        @loginButton.click()
+
+module.exports = LoginPage
+</pre>
+
+<p><span>Now we can simply <strong>require</strong> the <strong>start page</strong> Page Object in our scenarios to get the fluent syntax in our testing scenario:</span></p>
+
+<p><span><strong>login.scenarios.coffee</strong></span></p>
+
+<pre>
+StartPage = require('../PageObjects/start_page')
+
+describe('<e2e>', () -&gt;
+    loginPage = null
+
+    beforeEach(() -&gt;
+        startPage = new StartPage()
+        startPage.get()
+        loginPage = startPage.clickLogin()
+    )
+
+    describe('login', () -&gt;
+        it('should login and redirect to the dashboard with valid user credentials', () -&gt;
+            loginPage
+                .setUserName('john.doe@acme.com')
+                .setPassword('donttellanyone')
+                .submit()
+            browser.waitForAngular()
+            
+            expect(browser.getLocationAbsUrl()).toMatch('/app/#!/dashboard')
+        )
+
+...more tests
+}
+&lt;/pre&gt;
+
+<span>This way we get a nice structure and a pretty neat fluent syntax in our testing scenarios. Next up is how to bootstrap your server/database before each test scenario so that you can make integration test scenarios from a consistent state every time. I'll get back to that in a future post.</span>
+
+
+</e2e></pre>
+
+  </div><div id="disqus_thread"></div>
+  <script>
+    var disqus_config = function () {
+      this.page.url = 'https://www.lindstromhenrik.com/using-protractor-with-coffescript/';
+      this.page.identifier = 'https://www.lindstromhenrik.com/using-protractor-with-coffescript/';
+    };
+
+    (function() {
+      var d = document, s = d.createElement('script');
+
+      s.src = 'https://alifeinsearch.disqus.com/embed.js';
+
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
+    })();
+  </script>
+  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" rel="nofollow">comments powered by Disqus.</a></noscript><a class="u-url" href="/using-protractor-with-coffescript/" hidden></a>
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">a life in search</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p></p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>
