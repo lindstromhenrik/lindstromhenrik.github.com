@@ -57,13 +57,13 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p><span>A quite common use case for facets is to show a listing of the number of documents in a result for the different categories on the site (quite common is maybe an understatement as this is often the “hello world!” of faceting). A document can occur in maybe one or more categories and this is where your search index really stands out since it doesn’t care if you have one or two categories associated with the document it will return your facet in no time anyway. Sometimes your categories have a hierarchical structure that you want to reflect in your facet. Lets say that you have documents about cars and want to have a category tree based on manufacturer and name, ie. Volvo/XC60. How can you achieve a facet where you get an aggregated count for each level in the category tree? For example:</span></p>
 
-<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="nf">Volkswagen</span> <span class="p">(</span><span class="m">7</span><span class="p">)</span>
-    <span class="nf">Passat</span> <span class="p">(</span><span class="m">5</span><span class="p">)</span>
-    <span class="nf">Tiguan</span> <span class="p">(</span><span class="m">2</span><span class="p">)</span>
-<span class="nf">Volvo</span> <span class="p">(</span><span class="m">10</span><span class="p">)</span>
-    <span class="nf">V70</span> <span class="p">(</span><span class="m">5</span><span class="p">)</span>
-    <span class="nf">V60</span> <span class="p">(</span><span class="m">2</span><span class="p">)</span>
-    <span class="err">…</span></code></pre></figure>
+<figure class="highlight"><pre><code class="language-yaml" data-lang="yaml"><span class="s">Volkswagen (7)</span>
+    <span class="s">Passat (5)</span>
+    <span class="s">Tiguan (2)</span>
+<span class="s">Volvo (10)</span>
+    <span class="s">V70 (5)</span>
+    <span class="s">V60 (2)</span>
+    <span class="s">…</span></code></pre></figure>
 
 <p><span>The simplest way of doing this is by associating each document with all levels for each of its categories. Then by using a terms facet when fetching your result you will get an aggregated count for each node in your category tree. Voila, there is your hierarchical facet but with just a few lines of code you can get Find to do all that dirty work of your hands and all you have to do is to pass a category string (each level separated by a ‘/’) and return a facet that parse the result and reflects the nested structure of the category tree. I will leave out the implementation details but at <a href="https://github.com/x2find/HierarchicalFacet2Find">HierarchicalFacet2Find</a> you can fetch your own copy of the code that does that work for you.</span></p>
 
