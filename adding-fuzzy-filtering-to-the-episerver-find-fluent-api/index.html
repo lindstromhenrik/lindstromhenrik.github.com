@@ -57,117 +57,109 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p><span>A few days back I got a question of how to do fuzzy filtering on a field using the Fluent API in EPiServer.Find. Some had seen that Elasticsearch had the possibility to do <a href="http://www.elasticsearch.org/guide/reference/query-dsl/fuzzy-query.html">FuzzyQueries</a> and that the core classes in EPiServer.Find had an implementation of this query but that there wasn’t a corresponding filter in either Elasticsearch or EPiServer.Find for doing this. However this is quite easily done anyway and it will enable you to do queries like:</span></p>
 
-<pre>
-var result = SearchClient.Instance.Search&lt;MyIndexedObject&gt;()
-               .Filter(x =&gt; x.Author.Fuzzy("henric"))
-               .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">SearchClient</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">MyIndexedObject</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+               <span class="p">.</span><span class="nf">Filter</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Author</span><span class="p">.</span><span class="nf">Fuzzy</span><span class="p">(</span><span class="s">"henric"</span><span class="p">))</span>
+               <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <h2>Writing a QueryFilter</h2>
 <p><span>In Elasticsearch there is the possibility of wrapping a query in a filter using the <a href="http://www.elasticsearch.org/guide/reference/query-dsl/query-filter.html">Query Filter</a>. The latest official release for EPiServer.Find does however not have an implementation of it so we have to start by creating a new Filter class mapping to the QueryFilter implementation in Elasticsearch. Filter classes in EPiServer.Find are simply classes implementing Filter and when passed to the Json serializer are serialized to the corresponding Elasticsearch filter. So we create a QueryFilter class implementing Filter and a Json converter for serializing it:</span></p>
 
-<pre>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using EPiServer.Find.Api.Querying;
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Newtonsoft.Json</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">EPiServer.Find.Api.Querying</span><span class="p">;</span>
 
-namespace FuzzyFiltering
-{
-    [JsonConverter(typeof(QueryFilterConverter))]
-    public class QueryFilter : Filter
-    {
-        public QueryFilter(IQuery query)
-        {
-            Query = query;
-        }
+<span class="k">namespace</span> <span class="nn">FuzzyFiltering</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="nf">JsonConverter</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">QueryFilterConverter</span><span class="p">))]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">QueryFilter</span> <span class="p">:</span> <span class="n">Filter</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="nf">QueryFilter</span><span class="p">(</span><span class="n">IQuery</span> <span class="n">query</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">Query</span> <span class="p">=</span> <span class="n">query</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        public IQuery Query { get; set; }
+        <span class="k">public</span> <span class="n">IQuery</span> <span class="n">Query</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
 
-        public bool Cache { get; set; }
-    }
+        <span class="k">public</span> <span class="kt">bool</span> <span class="n">Cache</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="p">}</span>
 
-    internal class QueryFilterConverter : JsonConverter
-    {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            var filter = (QueryFilter)value;
-            if (filter.Cache)
-            {
-                writer.WriteStartObject();
-                writer.WritePropertyName("fquery");
-                writer.WriteStartObject();
-                writer.WritePropertyName("query");
-                serializer.Serialize(writer, filter.Query);
-                writer.WritePropertyName("_cache");
-                serializer.Serialize(writer, filter.Cache);
-                writer.WriteEndObject();
-                writer.WriteEndObject();
-            }
-            else
-            {
-                writer.WriteStartObject();
-                writer.WritePropertyName("query");
-                serializer.Serialize(writer, filter.Query);
-                writer.WriteEndObject();
-            }
-        }
+    <span class="k">internal</span> <span class="k">class</span> <span class="nc">QueryFilterConverter</span> <span class="p">:</span> <span class="n">JsonConverter</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">override</span> <span class="k">void</span> <span class="nf">WriteJson</span><span class="p">(</span><span class="n">JsonWriter</span> <span class="n">writer</span><span class="p">,</span> <span class="kt">object</span> <span class="k">value</span><span class="p">,</span> <span class="n">JsonSerializer</span> <span class="n">serializer</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="kt">var</span> <span class="n">filter</span> <span class="p">=</span> <span class="p">(</span><span class="n">QueryFilter</span><span class="p">)</span><span class="k">value</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">filter</span><span class="p">.</span><span class="n">Cache</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WriteStartObject</span><span class="p">();</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WritePropertyName</span><span class="p">(</span><span class="s">"fquery"</span><span class="p">);</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WriteStartObject</span><span class="p">();</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WritePropertyName</span><span class="p">(</span><span class="s">"query"</span><span class="p">);</span>
+                <span class="n">serializer</span><span class="p">.</span><span class="nf">Serialize</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">filter</span><span class="p">.</span><span class="n">Query</span><span class="p">);</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WritePropertyName</span><span class="p">(</span><span class="s">"_cache"</span><span class="p">);</span>
+                <span class="n">serializer</span><span class="p">.</span><span class="nf">Serialize</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">filter</span><span class="p">.</span><span class="n">Cache</span><span class="p">);</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WriteEndObject</span><span class="p">();</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WriteEndObject</span><span class="p">();</span>
+            <span class="p">}</span>
+            <span class="k">else</span>
+            <span class="p">{</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WriteStartObject</span><span class="p">();</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WritePropertyName</span><span class="p">(</span><span class="s">"query"</span><span class="p">);</span>
+                <span class="n">serializer</span><span class="p">.</span><span class="nf">Serialize</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">filter</span><span class="p">.</span><span class="n">Query</span><span class="p">);</span>
+                <span class="n">writer</span><span class="p">.</span><span class="nf">WriteEndObject</span><span class="p">();</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
 
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            return null;
-        }
+        <span class="k">public</span> <span class="k">override</span> <span class="kt">object</span> <span class="nf">ReadJson</span><span class="p">(</span><span class="n">JsonReader</span> <span class="n">reader</span><span class="p">,</span> <span class="n">Type</span> <span class="n">objectType</span><span class="p">,</span> <span class="kt">object</span> <span class="n">existingValue</span><span class="p">,</span> <span class="n">JsonSerializer</span> <span class="n">serializer</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">null</span><span class="p">;</span>
+        <span class="p">}</span>
 
-        public override bool CanConvert(Type objectType)
-        {
-            return true;
-        }
-    }
-}
-</pre>
+        <span class="k">public</span> <span class="k">override</span> <span class="kt">bool</span> <span class="nf">CanConvert</span><span class="p">(</span><span class="n">Type</span> <span class="n">objectType</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>Now we have the possibility to do Fuzzy filtering, or any other query filtering, by simply passing the query class to the query filter. Now it is time to extend the filter extensions to get that fluent querying that we love.</span></p>
 
 <h2>Writing a Filter extension for strings to do fuzzy matching</h2>
 <p><span>A filter extension is simply an extension of the core type that we want to extend, in our case string, and that returns a DelegateFilterBuilder. The DelegateFilterBuilder in turn is created by passing a mapping from the ‘field name’ to a filter. EPiServer.Find will automatically resolve the internal Elasticsearch field name for filters for you so all you have to do is the mapping (the filter field mappings are non tokenized so your query has to match the complete value of the field):</span></p>
 
-<pre>
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using EPiServer.Find;
-using EPiServer.Find.Api.Querying.Queries;
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Collections.Generic</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Linq</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">EPiServer.Find</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">EPiServer.Find.Api.Querying.Queries</span><span class="p">;</span>
 
-namespace FuzzyFiltering
-{
-    public static class FilterExtensions
-    {
-        public static DelegateFilterBuilder Fuzzy(this string value, string almost)
-        {
-            return new DelegateFilterBuilder(field =&gt; new QueryFilter(new FuzzyQuery(field, almost)));
-        }
+<span class="k">namespace</span> <span class="nn">FuzzyFiltering</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="k">static</span> <span class="k">class</span> <span class="nc">FilterExtensions</span>
+    <span class="p">{</span>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">DelegateFilterBuilder</span> <span class="nf">Fuzzy</span><span class="p">(</span><span class="k">this</span> <span class="kt">string</span> <span class="k">value</span><span class="p">,</span> <span class="kt">string</span> <span class="n">almost</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">DelegateFilterBuilder</span><span class="p">(</span><span class="n">field</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="nf">QueryFilter</span><span class="p">(</span><span class="k">new</span> <span class="nf">FuzzyQuery</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">almost</span><span class="p">)));</span>
+        <span class="p">}</span>
 
-        public static DelegateFilterBuilder Fuzzy(this string value, string almost, double minSimilarity)
-        {
-            return new DelegateFilterBuilder(field =&gt; new QueryFilter(new FuzzyQuery(field, almost) { MinSimilarity = minSimilarity }));
-        }
-    }
-}
-</pre>
+        <span class="k">public</span> <span class="k">static</span> <span class="n">DelegateFilterBuilder</span> <span class="nf">Fuzzy</span><span class="p">(</span><span class="k">this</span> <span class="kt">string</span> <span class="k">value</span><span class="p">,</span> <span class="kt">string</span> <span class="n">almost</span><span class="p">,</span> <span class="kt">double</span> <span class="n">minSimilarity</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">DelegateFilterBuilder</span><span class="p">(</span><span class="n">field</span> <span class="p">=&gt;</span> <span class="k">new</span> <span class="nf">QueryFilter</span><span class="p">(</span><span class="k">new</span> <span class="nf">FuzzyQuery</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="n">almost</span><span class="p">)</span> <span class="p">{</span> <span class="n">MinSimilarity</span> <span class="p">=</span> <span class="n">minSimilarity</span> <span class="p">}));</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>Voila, now we have a Fuzzy extension that we can use in our queries.</span></p>
 
 <h2>Wrapping it up</h2>
 <p><span>Importing the QueryFilter and FilterExtensions into your workspace you are now able to do that fluent search request you always wanted:</span></p>
 
-<pre>
-var result = SearchClient.Instance.Search&lt;MyIndexedObject&gt;()
-               .Filter(x =&gt; x.Author.Fuzzy("henric"))
-               .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="kt">var</span> <span class="n">result</span> <span class="p">=</span> <span class="n">SearchClient</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">MyIndexedObject</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+               <span class="p">.</span><span class="nf">Filter</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Author</span><span class="p">.</span><span class="nf">Fuzzy</span><span class="p">(</span><span class="s">"henric"</span><span class="p">))</span>
+               <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
   </div><div id="disqus_thread"></div>
   <script>
@@ -190,29 +182,33 @@ var result = SearchClient.Instance.Search&lt;MyIndexedObject&gt;()
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

@@ -57,24 +57,20 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p><span>After playing around with Protractor for a while I wanted to create some integration tests where I would bootstrap the entire server/database before each test to get a consistent state to start from in each test. The problem is that we often have to wait for everything to setup before running the tests. Using Jasmine as test framework the obvious solution for this would be to use the async callback in <strong>beforeEach</strong> do something like:</span></p>
 
-<pre>
-beforeEach((done) -&gt;
-    server.start(() -&gt;
-        done()
-    )
-)
-</pre>
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">beforeEach</span><span class="p">((</span><span class="nx">done</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nx">server</span><span class="p">.</span><span class="na">start</span><span class="p">(()</span> <span class="o">-&gt;</span>
+        <span class="nx">done</span><span class="p">()</span>
+    <span class="p">)</span>
+<span class="p">)</span></code></pre></figure>
 
 <p><span>and <strong>server.start</strong>:</span></p>
 
-<pre>
-start = (done) -&gt;
-    server = spawn('coffee', [ 'server.coffee' ])
-    server.stdout.on('data', (data) -&gt;
-        if data.toString() == 'App started\n'
-            done()
-    )
-</pre>
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">start</span> <span class="o">=</span> <span class="p">(</span><span class="nx">done</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="nx">server</span> <span class="o">=</span> <span class="nx">spawn</span><span class="p">(</span><span class="s">'coffee'</span><span class="p">,</span> <span class="p">[</span> <span class="s">'server.coffee'</span> <span class="p">])</span>
+    <span class="nx">server</span><span class="p">.</span><span class="na">stdout</span><span class="p">.</span><span class="na">on</span><span class="p">(</span><span class="s">'data'</span><span class="p">,</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="k">if</span> <span class="nx">data</span><span class="p">.</span><span class="na">toString</span><span class="p">()</span> <span class="o">==</span> <span class="s">'App started</span><span class="se">\n</span><span class="s">'</span>
+            <span class="nx">done</span><span class="p">()</span>
+    <span class="p">)</span></code></pre></figure>
 
 <p><span>Simply put, the server spawns a new process that starts our server using the command: <strong>‘coffee server.coffee’</strong> and then listen to stdout for the log output <strong>‘App started\n’</strong> and then issues the callback <strong>done</strong> (this is of course purely an example).</span></p>
 
@@ -88,29 +84,25 @@ npm install q
 
 <p><span>Then we modify our <strong>server.start</strong> to return a promise instead of using the callback:</span></p>
 
-<pre>
-Q = require('q')
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">Q</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s">'q'</span><span class="p">)</span>
 
-start = () -&gt;
-    deferred = Q.defer()
-    server = spawn('coffee', [ 'server.coffee' ])
-    server.stdout.on('data', (data) -&gt;
-        if data.toString() == 'App started\n'
-            deferred.resolve()
-    )
+<span class="nx">start</span> <span class="o">=</span> <span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nx">deferred</span> <span class="o">=</span> <span class="nx">Q</span><span class="p">.</span><span class="na">defer</span><span class="p">()</span>
+    <span class="nx">server</span> <span class="o">=</span> <span class="nx">spawn</span><span class="p">(</span><span class="s">'coffee'</span><span class="p">,</span> <span class="p">[</span> <span class="s">'server.coffee'</span> <span class="p">])</span>
+    <span class="nx">server</span><span class="p">.</span><span class="na">stdout</span><span class="p">.</span><span class="na">on</span><span class="p">(</span><span class="s">'data'</span><span class="p">,</span> <span class="p">(</span><span class="nx">data</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="k">if</span> <span class="nx">data</span><span class="p">.</span><span class="na">toString</span><span class="p">()</span> <span class="o">==</span> <span class="s">'App started</span><span class="se">\n</span><span class="s">'</span>
+            <span class="nx">deferred</span><span class="p">.</span><span class="na">resolve</span><span class="p">()</span>
+    <span class="p">)</span>
 
-    return deferred.promise
-</pre>
+    <span class="k">return</span> <span class="nx">deferred</span><span class="p">.</span><span class="na">promise</span></code></pre></figure>
 
 <p><span>Finally we add that to the Protractor control flow in the <strong>beforeEach</strong> function:</span></p>
 
-<pre>
-beforeEach(() -&gt;
-    protractor.promise.controlFlow().execute(() -&gt;
-        return server.start()
-    )
-)
-</pre>
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">beforeEach</span><span class="p">(()</span> <span class="o">-&gt;</span>
+    <span class="nx">protractor</span><span class="p">.</span><span class="na">promise</span><span class="p">.</span><span class="na">controlFlow</span><span class="p">().</span><span class="na">execute</span><span class="p">(()</span> <span class="o">-&gt;</span>
+        <span class="k">return</span> <span class="nx">server</span><span class="p">.</span><span class="na">start</span><span class="p">()</span>
+    <span class="p">)</span>
+<span class="p">)</span></code></pre></figure>
 
 <p><span>Voila! Now Protractor waits for our server to actually start before continuing with running the tests. Using this approach we can create integration tests that bootstraps the server before each test and completely isolates tests from each other enabling us to create better test scenarios that don’t depend on what order the tests are runned.</span></p>
 
@@ -135,29 +127,33 @@ beforeEach(() -&gt;
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

@@ -63,42 +63,34 @@
 
 <p><span>At startup register the contract interceptor:</span></p>
 
-<pre>
-client.Conventions.ContractResolver.ContractInterceptors.Add(new DictionaryConvention());
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="n">ContractResolver</span><span class="p">.</span><span class="n">ContractInterceptors</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="k">new</span> <span class="nf">DictionaryConvention</span><span class="p">());</span></code></pre></figure>
 
 <p><span>Given that you have indexed the following object:</span></p>
 
-<pre>
-public class Document 
-{ 
-	public Document() 
-	{
-		MetadataDictionary = new Dictionary&lt;string, string&gt;();
-	}
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">Document</span><span class="err"> </span>
+<span class="p">{</span><span class="err"> </span>
+	<span class="k">public</span> <span class="nf">Document</span><span class="p">()</span><span class="err"> </span>
+	<span class="p">{</span>
+		<span class="n">MetadataDictionary</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Dictionary</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
+	<span class="p">}</span>
     
-    public string Name { get; set; }
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
 
-    public Dictionary&lt;string, string&gt; MetadataDictionary { get; set; } 
-}
-</pre>
+    <span class="k">public</span> <span class="n">Dictionary</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">string</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">MetadataDictionary</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span><span class="err"> </span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>You can filter on all documents having a specific key</span></p>
 
-<pre>
-client.Search&lt;Document&gt;()
-	.Filter(x =&gt; x.MetadataDictionary.Keys.Match("key"))
-	.GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+	<span class="p">.</span><span class="nf">Filter</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">MetadataDictionary</span><span class="p">.</span><span class="n">Keys</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"key"</span><span class="p">))</span>
+	<span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>You can of course also specify keys/values when using the free text search:</span></p>
 
-<pre>
-client.Search&lt;Document&gt;()
-	.For("keyvalue")
-	.InField(x =&gt; x.MetadataDictionary.Keys)
-	.GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+	<span class="p">.</span><span class="nf">For</span><span class="p">(</span><span class="s">"keyvalue"</span><span class="p">)</span>
+	<span class="p">.</span><span class="nf">InField</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">MetadataDictionary</span><span class="p">.</span><span class="n">Keys</span><span class="p">)</span>
+	<span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>If you want to use these features with the EPiServer CMS integration simply change <i>client</i> in the examples to <i>SearchClient.Instance</i>.</span></p>
 
@@ -107,9 +99,8 @@ client.Search&lt;Document&gt;()
 <h4>Update</h4>
 <p><span>The dictionary convention registration has been added as an IClientConventionsExtension:</span></p>
 
-<pre>
-client.Conventions.AddDictionaryConventions();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="nf">AddDictionaryConventions</span><span class="p">();</span></code></pre></figure>
+
 
   </div><div id="disqus_thread"></div>
   <script>
@@ -132,29 +123,33 @@ client.Conventions.AddDictionaryConventions();
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

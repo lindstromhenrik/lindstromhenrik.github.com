@@ -61,32 +61,26 @@
 
 <p><span>Given an object with a TimeToLive property (or TimeSpan):</span></p>
 
-<pre>
-public class WithTimeToLive
-{
-    [Id]
-    public string Id { get; set; }
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">WithTimeToLive</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">Id</span><span class="p">]</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
 
-    public TimeToLive TimeToLive { get; set; }
-}
-</pre>
+    <span class="k">public</span> <span class="n">TimeToLive</span> <span class="n">TimeToLive</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>We first need to configure the client and register the TimeToLive-property for the given object type:</span></p>
 
-<pre>
-client.Conventions.ForInstancesOf&lt;WithTimeToLive&gt;()
-    .TimeToLiveIs(x =&gt; x.TimeToLive);
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="n">ForInstancesOf</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">WithTimeToLive</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+    <span class="p">.</span><span class="nf">TimeToLiveIs</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">TimeToLive</span><span class="p">);</span></code></pre></figure>
 
 <p><span>When indexing an object we simply register a TimeSpan value to the property specifying how long it should reside in the index:</span></p>
 
-<pre>
-indexObject = new WithTimeToLive()
-    {
-        Id = "123",
-        TimeToLive = new TimeSpan(0, 5, 0)
-    };
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">indexObject</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">WithTimeToLive</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">Id</span> <span class="p">=</span> <span class="s">"123"</span><span class="p">,</span>
+        <span class="n">TimeToLive</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">TimeSpan</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">0</span><span class="p">)</span>
+    <span class="p">};</span></code></pre></figure>
 
 <p><span>I hope you may find this useful when making your site awesome with EPiServer Find!</span></p>
 
@@ -97,22 +91,19 @@ indexObject = new WithTimeToLive()
 <h3>Updated:</h3>
 <p><span>Instead of configuring the TimeToLive-property by the conventions it can be annotated by the TimeToLiveAttribute:</span></p>
 
-<pre>
-public class WithTimeToLive
-{
-    [Id]
-    public string Id { get; set; }
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">WithTimeToLive</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">Id</span><span class="p">]</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
     
-    [TimeToLive]
-    public TimeToLive TimeToLive { get; set; }
-}
-</pre>
+    <span class="p">[</span><span class="n">TimeToLive</span><span class="p">]</span>
+    <span class="k">public</span> <span class="n">TimeToLive</span> <span class="n">TimeToLive</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>or passed in the index call:</span></p>
 
-<pre>
-client.Index(indexObjext, x =&gt; x.TimeToLive = new TimeSpan(0, 5, 0));
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="nf">Index</span><span class="p">(</span><span class="n">indexObjext</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">TimeToLive</span> <span class="p">=</span> <span class="k">new</span> <span class="nf">TimeSpan</span><span class="p">(</span><span class="m">0</span><span class="p">,</span> <span class="m">5</span><span class="p">,</span> <span class="m">0</span><span class="p">));</span></code></pre></figure>
+
 
   </div><div id="disqus_thread"></div>
   <script>
@@ -135,29 +126,33 @@ client.Index(indexObjext, x =&gt; x.TimeToLive = new TimeSpan(0, 5, 0));
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

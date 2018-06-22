@@ -63,86 +63,80 @@
 <h2>Demo: Implementing a language categorizer</h2>
 <p><span>We start by creating an index (I’ve named it ‘myindex’) and add a parent mapping between a category type and a data type:</span></p>
 
-<pre>
-http://localhost:9200/myindex
-{
-    "mappings": {
-        "data": {
-            "_parent": {
-                "type": "category"
-            }
-        }
-    }
-}
-</pre>
+<figure class="highlight"><pre><code class="language-json-doc" data-lang="json-doc"><span class="na">http</span><span class="p">:</span><span class="c1">//localhost:9200/myindex
+</span><span class="w">
+</span><span class="p">{</span><span class="w">
+    </span><span class="s2">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_parent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"category"</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p><span>Then we add the known categories:</span></p>
 
-<pre>
-http://localhost:9200/myindex/category/sv
-{
-    "name": "Swedish"
-}
-...
-</pre>
+<figure class="highlight"><pre><code class="language-json-doc" data-lang="json-doc"><span class="na">http</span><span class="p">:</span><span class="c1">//localhost:9200/myindex/category/sv
+</span><span class="w">
+</span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Swedish"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1">...</span></code></pre></figure>
 
 <p><span>For the ‘known’ data we index it and relate it to the parent category:</span></p>
 
-<pre>
-http://localhost:9200/myindex/data/1?parent=sv
-{
-    "text": "det här är en text skriven på svenska"
-}
-...
-</pre>
+<figure class="highlight"><pre><code class="language-json-doc" data-lang="json-doc"><span class="na">http</span><span class="p">:</span><span class="c1">//localhost:9200/myindex/data/1?parent=sv
+</span><span class="w">
+</span><span class="p">{</span><span class="w">
+    </span><span class="s2">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"det här är en text skriven på svenska"</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span><span class="c1">...</span></code></pre></figure>
 
 <p><span>Using the has_child-query we can then easily achieve the described approach of searching for categories and have them returned based on the avg score of a child-query issued on the data. (In this case we just do a simple query_string-query with the text we want do do language detection for, ‘en svensk text’):</span></p>
 
-<pre>
-http://localhost:9200/myindex/category/_search
-{
-  "query":{
-    "has_child": {
-      "type": "data",
-      "score_type" : "avg",
-      "query" : {
-        "query_string": {
-          "query": "en svensk text"
-        }
-      }
-    }
-  }
-}
-</pre>
+<figure class="highlight"><pre><code class="language-json-doc" data-lang="json-doc"><span class="na">http</span><span class="p">:</span><span class="c1">//localhost:9200/myindex/category/_search
+</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="s2">"query"</span><span class="p">:{</span><span class="w">
+    </span><span class="s2">"has_child"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"score_type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"avg"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"query"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"query_string"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="s2">"query"</span><span class="p">:</span><span class="w"> </span><span class="s2">"en svensk text"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p><span>Resulting in:</span></p>
 
-<pre>
-{
-    "took": 27,
-    "timed_out": false,
-    "_shards": {
-        "total": 5,
-        "successful": 5,
-        "failed": 0
-    },
-    "hits": {
-        "total": 1,
-        "max_score": 0.3125,
-        "hits": [
-            {
-                "_index": "myindex",
-                "_type": "category",
-                "_id": "sv",
-                "_score": 0.3125,
-                "_source": {
-                    "name": "Swedish"
-                }
-            }
-        ]
-    }
-}
-</pre>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="s2">"took"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"timed_out"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"_shards"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"successful"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"failed"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"hits"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"total"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"max_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3125</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"hits"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"_index"</span><span class="p">:</span><span class="w"> </span><span class="s2">"myindex"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"category"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sv"</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"_score"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.3125</span><span class="p">,</span><span class="w">
+                </span><span class="s2">"_source"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Swedish"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p><span>Voila! In just 4 steps you know have your very own language detector.</span></p>
 
@@ -175,29 +169,33 @@ http://localhost:9200/myindex/category/_search
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

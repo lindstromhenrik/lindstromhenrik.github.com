@@ -61,33 +61,25 @@
 
 <p><span>To use it you simply pass a filter when requesting the facet:</span></p>
 
-<pre>
-result = client.Search&lt;Document&gt;()
-                        .TermsFacetFor(x =&gt; x.Category, x =&gt; x.Type.Match("pdf"))
-                        .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">result</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+                        <span class="p">.</span><span class="nf">TermsFacetFor</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Category</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Type</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"pdf"</span><span class="p">))</span>
+                        <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>and fetch the resulting facet:</span></p>
 
-<pre>
-facet = result.TermsFacetFor(x =&gt; x.Category);
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">facet</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="nf">TermsFacetFor</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Category</span><span class="p">);</span></code></pre></figure>
 
 <p><span>In order to specify multiple facets on a single field, each having a different filter, one must specify a custom name:</span></p>
 
-<pre>
-result = client.Search&lt;Document&gt;()
-                        .TermsFacetFor(x =&gt; x.Category, x =&gt; x.Type.Match("pdf"), x =&gt; x.Name = "PdfCategories")
-                        .TermsFacetFor(x =&gt; x.Category, x =&gt; x.Type.Match("doc"), x =&gt; x.Name = "DocCategories")
-                        .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">result</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+                        <span class="p">.</span><span class="nf">TermsFacetFor</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Category</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Type</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"pdf"</span><span class="p">),</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Name</span> <span class="p">=</span> <span class="s">"PdfCategories"</span><span class="p">)</span>
+                        <span class="p">.</span><span class="nf">TermsFacetFor</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Category</span><span class="p">,</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Type</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"doc"</span><span class="p">),</span> <span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Name</span> <span class="p">=</span> <span class="s">"DocCategories"</span><span class="p">)</span>
+                        <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>and fetch the resulting facets:</span></p>
 
-<pre>
-pdfTypeFacet = result.Facets["PdfCategories"] as TermsFacet;
-docTypeFacet = result.Facets["DocCategories"] as TermsFacet;
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">pdfTypeFacet</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">Facets</span><span class="p">[</span><span class="s">"PdfCategories"</span><span class="p">]</span> <span class="k">as</span> <span class="n">TermsFacet</span><span class="p">;</span>
+<span class="n">docTypeFacet</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="n">Facets</span><span class="p">[</span><span class="s">"DocCategories"</span><span class="p">]</span> <span class="k">as</span> <span class="n">TermsFacet</span><span class="p">;</span></code></pre></figure>
 
 <p><span>I hope you may find this useful when making your site awesome with EPiServer Find!</span></p>
 
@@ -112,29 +104,33 @@ docTypeFacet = result.Facets["DocCategories"] as TermsFacet;
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

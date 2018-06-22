@@ -63,47 +63,39 @@
 
 <p><span>Add the nested conventions to the conventions:</span></p>
 
-<pre>
-client.Conventions.AddNestedConventions();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="nf">AddNestedConventions</span><span class="p">();</span></code></pre></figure>
 
 <p><span>Create an object containing a NestedList&lt;&gt; of objects (NestedList&lt;&gt; is simply a typed List&lt;&gt;):</span></p>
 
-<pre>
-public class Document
-{
-    public Document()
-    {
-        Authors = new NestedList&lt;Author&gt;();
-    }
-    public string Title { get; set; }
-    public NestedList&lt;Author&gt; Authors { get; set; }
-    public string Body { get; set; }
-}
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">Document</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="nf">Document</span><span class="p">()</span>
+    <span class="p">{</span>
+        <span class="n">Authors</span> <span class="p">=</span> <span class="k">new</span> <span class="n">NestedList</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Author</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
+    <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Title</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="n">NestedList</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Author</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;</span> <span class="n">Authors</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Body</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span>
 
-public class Author
-{
-    public string Name { get; set; }
-    public string Address { get; set; }
-    public string Country { get; set; }
-}
-</pre>
+<span class="k">public</span> <span class="k">class</span> <span class="nc">Author</span>
+<span class="p">{</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Address</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Country</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>Index and start filtering:</span></p>
 
-<pre>
-result = client.Search&lt;Document&gt;()
-             .Filter(x =&gt; x.Authors, p =&gt; p.Name.Match("Henrik") &amp; p.Country.Match("Sweden"))
-             .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">result</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+             <span class="p">.</span><span class="nf">Filter</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Authors</span><span class="p">,</span> <span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">Name</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"Henrik"</span><span class="p">)</span> <span class="p">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">p</span><span class="p">.</span><span class="n">Country</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"Sweden"</span><span class="p">))</span>
+             <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>or:<span></span></span></p>
 
-<pre>
-result = client.Search&lt;Document&gt;()
-            .Filter(x =&gt; x.Authors.MatchItem(p =&gt; p.FirstName.Match("Henrik") &amp; p.Country.Match("Sweden")))
-            .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">result</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+            <span class="p">.</span><span class="nf">Filter</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Authors</span><span class="p">.</span><span class="nf">MatchItem</span><span class="p">(</span><span class="n">p</span> <span class="p">=&gt;</span> <span class="n">p</span><span class="p">.</span><span class="n">FirstName</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"Henrik"</span><span class="p">)</span> <span class="p">&amp;</span><span class="n">amp</span><span class="p">;</span> <span class="n">p</span><span class="p">.</span><span class="n">Country</span><span class="p">.</span><span class="nf">Match</span><span class="p">(</span><span class="s">"Sweden"</span><span class="p">)))</span>
+            <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <sapn>I hope you may find this useful when making your site awesome with EPiServer Find!&lt;/span&gt;
 </sapn>
@@ -129,29 +121,33 @@ result = client.Search&lt;Document&gt;()
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

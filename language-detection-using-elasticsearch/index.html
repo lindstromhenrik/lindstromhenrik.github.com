@@ -59,66 +59,62 @@
 
 <p><span>First, instead of using the default mapping for the ‘text’ field we use the nGram-tokenizer where we specify that we want to index all 2 and 3 letter ngrams of the text. Every language basically have different frequencies for each letter sequence and we want to find the language not by the words in the query but by how common the letter sequences are (as an example ‘th’ is very common in english but rare in swedish). This way we will actually be able to detect the language for a word sequence even if we haven’t actually seen any of the words in the training set. So, we extend our mappings to use the nGram-tokenizer:</span></p>
 
-<pre>
-{
-    "settings" : {
-        "analysis" : {
-            "analyzer" : {
-                "ngram_analyzer" : {
-                    "tokenizer" : "ngram_tokenizer"
-                }
-            },
-            "tokenizer" : {
-                "ngram_tokenizer" : {
-                    "type" : "nGram",
-                    "min_gram" : "2",
-                    "max_gram" : "3",
-                    "token_chars": [ "letter", "digit" ]
-                }
-            }
-        }
-    },
-    "mappings": {
-        "data": {
-            "_parent": {
-                "type": "category"
-            },
-            "properties": {
-                "text": {
-                    "type": "string", 
-                    "analyzer": "ngram_analyzer"                
-                }
-            }
-        }
-    }
-}
-</pre>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+    </span><span class="s2">"settings"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"analysis"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"analyzer"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"ngram_analyzer"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"tokenizer"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"ngram_tokenizer"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"tokenizer"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"ngram_tokenizer"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"nGram"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"min_gram"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"max_gram"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
+                    </span><span class="s2">"token_chars"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"letter"</span><span class="p">,</span><span class="w"> </span><span class="s2">"digit"</span><span class="w"> </span><span class="p">]</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="s2">"mappings"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"_parent"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"category"</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                    </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"string"</span><span class="p">,</span><span class="w"> 
+                    </span><span class="s2">"analyzer"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ngram_analyzer"</span><span class="w">                
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p><span>When querying we then want to calculate the average score for each language using the has_child query but we don’t want the query to filter out any hits but rather return a 0-score for a document that doesn’t match (i.e. we don’t want the score for one language to be based on maybe one tenth of all documents for that language and the score for another to be based on half of the documents for that language). To do this we use the ‘boosting’ query where we simply give a boost to all documents matching the query:</span></p>
 
-<pre>
-{
-  "query":{
-    "has_child": {
-      "type": "data",
-      "score_type" : "avg",
-      "query": {
-        "boosting" : {
-            "positive" : {
-                "match": {
-                  "text": "skriver en bok"
-                }
-            },
-            "negative" : {
-               "match_all": { }
-            },
-            "negative_boost" : 1
-        }
-    }
-    }
-  }
-}
-</pre>
+<figure class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span><span class="w">
+  </span><span class="s2">"query"</span><span class="p">:{</span><span class="w">
+    </span><span class="s2">"has_child"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"data"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"score_type"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="s2">"avg"</span><span class="p">,</span><span class="w">
+      </span><span class="s2">"query"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="s2">"boosting"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="s2">"positive"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                </span><span class="s2">"match"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+                  </span><span class="s2">"text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"skriver en bok"</span><span class="w">
+                </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"negative"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+               </span><span class="s2">"match_all"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w">
+            </span><span class="p">},</span><span class="w">
+            </span><span class="s2">"negative_boost"</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span></code></pre></figure>
 
 <p><span>Using these simple ‘tweaks’ we have actually created a very accurate language detector. If you want to give it a try you can create training sets from the <a href="http://corpora.uni-leipzig.de">Leipzig Corpora Collection</a> for the different languages you want to detect.</span></p>
 
@@ -143,29 +139,33 @@
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

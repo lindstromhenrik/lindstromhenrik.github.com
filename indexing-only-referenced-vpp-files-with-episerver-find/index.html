@@ -57,62 +57,61 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p><span>The EPiServer Find CMS integration does not index any files stored in the VPP by default. A convention is included in the integration that index files visible in the file manager and it is enabled by setting the VisibleInFilemanagerVPPIndexingConvention on the FilieIndexer conventions:</span></p>
 
-<pre>
-FileIndexer.Instance.Conventions.ShouldIndexVPPConvention 
-  = new VisibleInFilemanagerVPPIndexingConvention();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">FileIndexer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="n">ShouldIndexVPPConvention</span> 
+  <span class="p">=</span> <span class="k">new</span> <span class="nf">VisibleInFilemanagerVPPIndexingConvention</span><span class="p">();</span></code></pre></figure>
 
 <p><span>However, this convention can be a little bit aggressive. As soon as an editor adds a file it is searchable and even though no access control mechanism are overruled some might think it is hidden until it is actually used on the site. So how do we proceed to achieve this?</span></p>
 
 <p><span>Built in into the CMS there is the ContentSoftLinkRepository where we can query if files (or any IContent for that matter) is linked from within another IContent. By using this we can then create a file indexing convention that checks if the file is linked from some indexed IContent and if so we index it:</span></p>
 
-<pre>
-FileIndexer.Instance.Conventions.ForInstancesOf&lt;UnifiedFile&gt;().ShouldIndex(x =&gt;
-{
-    var contentRepository = 
-        ServiceLocation.ServiceLocator.Current.GetInstance&lt;IContentRepository&gt;();
-    var contentSoftLinkRepository = 
-        ServiceLocation.ServiceLocator.Current.GetInstance&lt;ContentSoftLinkRepository&gt;();
-    var softLinks = contentSoftLinkRepository.Load(x.VirtualPath);
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">FileIndexer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="n">ForInstancesOf</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">UnifiedFile</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;().</span><span class="nf">ShouldIndex</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span>
+<span class="p">{</span>
+    <span class="kt">var</span> <span class="n">contentRepository</span> <span class="p">=</span> 
+        <span class="n">ServiceLocation</span><span class="p">.</span><span class="n">ServiceLocator</span><span class="p">.</span><span class="n">Current</span><span class="p">.</span><span class="n">GetInstance</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">IContentRepository</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
+    <span class="kt">var</span> <span class="n">contentSoftLinkRepository</span> <span class="p">=</span> 
+        <span class="n">ServiceLocation</span><span class="p">.</span><span class="n">ServiceLocator</span><span class="p">.</span><span class="n">Current</span><span class="p">.</span><span class="n">GetInstance</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">ContentSoftLinkRepository</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;();</span>
+    <span class="kt">var</span> <span class="n">softLinks</span> <span class="p">=</span> <span class="n">contentSoftLinkRepository</span><span class="p">.</span><span class="nf">Load</span><span class="p">(</span><span class="n">x</span><span class="p">.</span><span class="n">VirtualPath</span><span class="p">);</span>
 
-    try
-    {
-        foreach (var softLink in softLinks)
-        {
+    <span class="k">try</span>
+    <span class="p">{</span>
+        <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">softLink</span> <span class="k">in</span> <span class="n">softLinks</span><span class="p">)</span>
+        <span class="p">{</span>
             
-            if (softLink.SoftLinkType == ReferenceType.ExternalReference ||
-                softLink.SoftLinkType == ReferenceType.ImageReference)
-            {
-                var content = 
-                    contentRepository.Get&lt;IContent&gt;(softLink.OwnerContentLink);
-                if (!ContentIndexer.Instance.Conventions.ShouldIndexConvention.ShouldIndex(content).Value) // don't index referenced file if content is marked as not indexed
-                {
-                    continue;
-                }
+            <span class="k">if</span> <span class="p">(</span><span class="n">softLink</span><span class="p">.</span><span class="n">SoftLinkType</span> <span class="p">==</span> <span class="n">ReferenceType</span><span class="p">.</span><span class="n">ExternalReference</span> <span class="p">||</span>
+                <span class="n">softLink</span><span class="p">.</span><span class="n">SoftLinkType</span> <span class="p">==</span> <span class="n">ReferenceType</span><span class="p">.</span><span class="n">ImageReference</span><span class="p">)</span>
+            <span class="p">{</span>
+                <span class="kt">var</span> <span class="n">content</span> <span class="p">=</span> 
+                    <span class="n">contentRepository</span><span class="p">.</span><span class="n">Get</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">IContent</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;(</span><span class="n">softLink</span><span class="p">.</span><span class="n">OwnerContentLink</span><span class="p">);</span>
+                <span class="k">if</span> <span class="p">(!</span><span class="n">ContentIndexer</span><span class="p">.</span><span class="n">Instance</span><span class="p">.</span><span class="n">Conventions</span><span class="p">.</span><span class="n">ShouldIndexConvention</span><span class="p">.</span><span class="nf">ShouldIndex</span><span class="p">(</span><span class="n">content</span><span class="p">).</span><span class="n">Value</span><span class="p">)</span> <span class="c1">// don't index referenced file if content is marked as not indexed
+</span>
+                <span class="p">{</span>
+                    <span class="k">continue</span><span class="p">;</span>
+                <span class="p">}</span>
 
-                // only index if content is published
-                var publicationStatus = 
-                    content.PublishedInLanguage()[softLink.OwnerLanguage.Name];
+                <span class="c1">// only index if content is published
+</span>
+                <span class="kt">var</span> <span class="n">publicationStatus</span> <span class="p">=</span> 
+                    <span class="n">content</span><span class="p">.</span><span class="nf">PublishedInLanguage</span><span class="p">()[</span><span class="n">softLink</span><span class="p">.</span><span class="n">OwnerLanguage</span><span class="p">.</span><span class="n">Name</span><span class="p">];</span>
 
-                if (publicationStatus != null &amp;&amp;
-                    (publicationStatus.StartPublish == null ||
-                     publicationStatus.StartPublish &lt; DateTime.Now) &amp;&amp;
-                    (publicationStatus.StopPublish == null ||
-                     DateTime.Now &lt; publicationStatus.StopPublish))
-                {
-                    return true;
-                }
-            }
-        }
-    }
-    catch
-    {
-        // ooops something went wrong. Better not index this one ;-)
-    }
+                <span class="k">if</span> <span class="p">(</span><span class="n">publicationStatus</span> <span class="p">!=</span> <span class="k">null</span> <span class="p">&amp;</span><span class="n">amp</span><span class="p">;&amp;</span><span class="n">amp</span><span class="p">;</span>
+                    <span class="p">(</span><span class="n">publicationStatus</span><span class="p">.</span><span class="n">StartPublish</span> <span class="p">==</span> <span class="k">null</span> <span class="p">||</span>
+                     <span class="n">publicationStatus</span><span class="p">.</span><span class="n">StartPublish</span> <span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">)</span> <span class="p">&amp;</span><span class="n">amp</span><span class="p">;&amp;</span><span class="n">amp</span><span class="p">;</span>
+                    <span class="p">(</span><span class="n">publicationStatus</span><span class="p">.</span><span class="n">StopPublish</span> <span class="p">==</span> <span class="k">null</span> <span class="p">||</span>
+                     <span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span> <span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span> <span class="n">publicationStatus</span><span class="p">.</span><span class="n">StopPublish</span><span class="p">))</span>
+                <span class="p">{</span>
+                    <span class="k">return</span> <span class="k">true</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">catch</span>
+    <span class="p">{</span>
+        <span class="c1">// ooops something went wrong. Better not index this one ;-)
+</span>
+    <span class="p">}</span>
 
-    return false;
-});
-</pre>
+    <span class="k">return</span> <span class="k">false</span><span class="p">;</span>
+<span class="p">});</span></code></pre></figure>
 
 <p><span>Using this convention only files that are referenced from an indexed IContent, that also is published (as by default also unpublished IContent is indexed to provide better querying in editor mode).</span></p>
 
@@ -139,29 +138,33 @@ FileIndexer.Instance.Conventions.ForInstancesOf&lt;UnifiedFile&gt;().ShouldIndex
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

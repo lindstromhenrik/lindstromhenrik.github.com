@@ -61,42 +61,38 @@
 
 <p><span>I like using CoffeScript (even though I’m kind of verbose when I use it compared to most as I like keeping the parentheses) and thought it would be great if I could write my Page Objects as CoffeScript classes and chain the functions giving me a fluent syntax like:</span></p>
 
-<pre>
-startPage.
-    .clickLogin()
-            .setUserName('john.doe@acme.com')
-            .setPassword('donttellanyone')
-            .submit()
-    browser.waitForAngular()
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">startPage</span><span class="p">.</span>
+    <span class="p">.</span><span class="na">clickLogin</span><span class="p">()</span>
+            <span class="p">.</span><span class="na">setUserName</span><span class="p">(</span><span class="s">'john.doe@acme.com'</span><span class="p">)</span>
+            <span class="p">.</span><span class="na">setPassword</span><span class="p">(</span><span class="s">'donttellanyone'</span><span class="p">)</span>
+            <span class="p">.</span><span class="na">submit</span><span class="p">()</span>
+    <span class="nx">browser</span><span class="p">.</span><span class="na">waitForAngular</span><span class="p">()</span>
     
-    expect(browser.getLocationAbsUrl()).toMatch('/app/#!/dashboard')
-</pre>
+    <span class="nx">expect</span><span class="p">(</span><span class="nx">browser</span><span class="p">.</span><span class="na">getLocationAbsUrl</span><span class="p">()).</span><span class="na">toMatch</span><span class="p">(</span><span class="s">'/app/#!/dashboard'</span><span class="p">)</span></code></pre></figure>
 
 <p><span>So, how do we do this? First we need to register CoffeScript in the protractor configuration to be able to use it in our scenarios:</span></p>
 
 <p><span><strong>protractor-conf.js</strong></span></p>
 
-<pre>
-exports.config = {
-    allScriptsTimeout: 11000,
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">exports</span><span class="p">.</span><span class="na">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="na">allScriptsTimeout</span><span class="o">:</span> <span class="mi">11000</span><span class="p">,</span>
 
-    specs: [
-        'e2e/*.scenarios.coffee'
-    ],
+    <span class="na">specs</span><span class="o">:</span> <span class="p">[</span>
+        <span class="s">'e2e/*.scenarios.coffee'</span>
+    <span class="p">],</span>
 
-    capabilities: {
-        'browserName': 'chrome'
-    },
+    <span class="na">capabilities</span><span class="o">:</span> <span class="p">{</span>
+        <span class="s">'browserName'</span><span class="o">:</span> <span class="s">'chrome'</span>
+    <span class="p">},</span>
 
-    baseUrl: 'http://localhost:10000/app',
+    <span class="na">baseUrl</span><span class="o">:</span> <span class="s">'http://localhost:10000/app'</span><span class="p">,</span>
 
-    framework: 'jasmine',
+    <span class="na">framework</span><span class="o">:</span> <span class="s">'jasmine'</span><span class="p">,</span>
 
-    jasmineNodeOpts: {
-        defaultTimeoutInterval: 30000
-    }
-};
-</pre>
+    <span class="na">jasmineNodeOpts</span><span class="o">:</span> <span class="p">{</span>
+        <span class="na">defaultTimeoutInterval</span><span class="o">:</span> <span class="mi">30000</span>
+    <span class="p">}</span>
+<span class="p">};</span></code></pre></figure>
 
 <p><span>Note: If you don’t have CoffeScript installed grab it with:</span></p>
 
@@ -106,24 +102,22 @@ exports.config = {
 
 <p><span><strong>start_page.coffee</strong></span></p>
 
-<pre>
-LoginPage = require('./login_page')
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">LoginPage</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s">'./login_page'</span><span class="p">)</span>
 
-class StartPage
-    constructor: -&gt;
-        @loginLink = element(By.id('loginLink'))
+<span class="k">class</span> <span class="nx">StartPage</span>
+    <span class="na">constructor</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">loginLink</span> <span class="o">=</span> <span class="nx">element</span><span class="p">(</span><span class="nx">By</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">'loginLink'</span><span class="p">))</span>
 
-    get: -&gt;
-        browser.get('app/#!/')
-        return @
+    <span class="na">get</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="nx">browser</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">'app/#!/'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="err">@</span>
 
-    clickLogin: -&gt;
-        @loginLink.click()
-        browser.waitForAngular()
-        return new LoginPage()
+    <span class="na">clickLogin</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">loginLink</span><span class="p">.</span><span class="na">click</span><span class="p">()</span>
+        <span class="nx">browser</span><span class="p">.</span><span class="na">waitForAngular</span><span class="p">()</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nx">LoginPage</span><span class="p">()</span>
 
-module.exports = StartPage
-</pre>
+<span class="nx">module</span><span class="p">.</span><span class="na">exports</span> <span class="o">=</span> <span class="nx">StartPage</span></code></pre></figure>
 
 <p><span>We grab the login link element in the constructor (I’ve just set the id in the html view so that it is easy to get hold of in the tests and making the test a bit more robust if I decide to move the login link). When someone then clicks login we click the link and wait for angular to complete the request and then we return the Page Object for the <strong>login page</strong>.<span></span></span></p>
 
@@ -131,80 +125,74 @@ module.exports = StartPage
 
 <p><span><strong>login_page.coffee</strong></span></p>
 
-<pre>
-LoginPage = require('./login_page')
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">LoginPage</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s">'./login_page'</span><span class="p">)</span>
 
-class LoginPage
-    constructor: -&gt;
-        @username = element(By.model('user.name'))
-        @password = element(By.model('user.password'))
-        @loginButton = element(By.id('loginButton'))
-        @errorMessage = element(By.id('loginErrorMessage'))
+<span class="k">class</span> <span class="nx">LoginPage</span>
+    <span class="na">constructor</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">username</span> <span class="o">=</span> <span class="nx">element</span><span class="p">(</span><span class="nx">By</span><span class="p">.</span><span class="na">model</span><span class="p">(</span><span class="s">'user.name'</span><span class="p">))</span>
+        <span class="vi">@</span><span class="na">password</span> <span class="o">=</span> <span class="nx">element</span><span class="p">(</span><span class="nx">By</span><span class="p">.</span><span class="na">model</span><span class="p">(</span><span class="s">'user.password'</span><span class="p">))</span>
+        <span class="vi">@</span><span class="na">loginButton</span> <span class="o">=</span> <span class="nx">element</span><span class="p">(</span><span class="nx">By</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">'loginButton'</span><span class="p">))</span>
+        <span class="vi">@</span><span class="na">errorMessage</span> <span class="o">=</span> <span class="nx">element</span><span class="p">(</span><span class="nx">By</span><span class="p">.</span><span class="na">id</span><span class="p">(</span><span class="s">'loginErrorMessage'</span><span class="p">))</span>
 
-    get: -&gt;
-        browser.get('app/#!/auth/login')
-        return @
+    <span class="na">get</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="nx">browser</span><span class="p">.</span><span class="na">get</span><span class="p">(</span><span class="s">'app/#!/auth/login'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="err">@</span>
 
-    getErrorMessage: -&gt;
-        return @errorMessage.getText()
+    <span class="na">getErrorMessage</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="k">return</span> <span class="vi">@</span><span class="na">errorMessage</span><span class="p">.</span><span class="na">getText</span><span class="p">()</span>
 
-    setUserName: (text) -&gt;
-        @username.sendKeys(text)
-        return @
+    <span class="na">setUserName</span><span class="o">:</span> <span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">username</span><span class="p">.</span><span class="na">sendKeys</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="err">@</span>
 
-    clearUserName: -&gt;
-        @username.clear()
-        return @
+    <span class="na">clearUserName</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">username</span><span class="p">.</span><span class="na">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="err">@</span>
 
-    setPassword: (text) -&gt;
-        @password.sendKeys(text)
-        return @
+    <span class="na">setPassword</span><span class="o">:</span> <span class="p">(</span><span class="nx">text</span><span class="p">)</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">password</span><span class="p">.</span><span class="na">sendKeys</span><span class="p">(</span><span class="nx">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="err">@</span>
 
-    clearPassword: -&gt;
-        @password.clear()
-        return @
+    <span class="na">clearPassword</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">password</span><span class="p">.</span><span class="na">clear</span><span class="p">()</span>
+        <span class="k">return</span> <span class="err">@</span>
 
-    submit: -&gt;
-        @loginButton.click()
+    <span class="na">submit</span><span class="o">:</span> <span class="o">-&gt;</span>
+        <span class="vi">@</span><span class="na">loginButton</span><span class="p">.</span><span class="na">click</span><span class="p">()</span>
 
-module.exports = LoginPage
-</pre>
+<span class="nx">module</span><span class="p">.</span><span class="na">exports</span> <span class="o">=</span> <span class="nx">LoginPage</span></code></pre></figure>
 
 <p><span>Now we can simply <strong>require</strong> the <strong>start page</strong> Page Object in our scenarios to get the fluent syntax in our testing scenario:</span></p>
 
 <p><span><strong>login.scenarios.coffee</strong></span></p>
 
-<pre>
-StartPage = require('../PageObjects/start_page')
+<figure class="highlight"><pre><code class="language-coffeescript" data-lang="coffeescript"><span class="nx">StartPage</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s">'../PageObjects/start_page'</span><span class="p">)</span>
 
-describe('<e2e>', () -&gt;
-    loginPage = null
+<span class="nx">describe</span><span class="p">(</span><span class="s">'&lt;e2e&gt;'</span><span class="p">,</span> <span class="p">()</span> <span class="o">-&gt;</span>
+    <span class="nx">loginPage</span> <span class="o">=</span> <span class="no">null</span>
 
-    beforeEach(() -&gt;
-        startPage = new StartPage()
-        startPage.get()
-        loginPage = startPage.clickLogin()
-    )
+    <span class="nx">beforeEach</span><span class="p">(()</span> <span class="o">-&gt;</span>
+        <span class="nx">startPage</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">StartPage</span><span class="p">()</span>
+        <span class="nx">startPage</span><span class="p">.</span><span class="na">get</span><span class="p">()</span>
+        <span class="nx">loginPage</span> <span class="o">=</span> <span class="nx">startPage</span><span class="p">.</span><span class="na">clickLogin</span><span class="p">()</span>
+    <span class="p">)</span>
 
-    describe('login', () -&gt;
-        it('should login and redirect to the dashboard with valid user credentials', () -&gt;
-            loginPage
-                .setUserName('john.doe@acme.com')
-                .setPassword('donttellanyone')
-                .submit()
-            browser.waitForAngular()
+    <span class="nx">describe</span><span class="p">(</span><span class="s">'login'</span><span class="p">,</span> <span class="p">()</span> <span class="o">-&gt;</span>
+        <span class="nx">it</span><span class="p">(</span><span class="s">'should login and redirect to the dashboard with valid user credentials'</span><span class="p">,</span> <span class="p">()</span> <span class="o">-&gt;</span>
+            <span class="nx">loginPage</span>
+                <span class="p">.</span><span class="na">setUserName</span><span class="p">(</span><span class="s">'john.doe@acme.com'</span><span class="p">)</span>
+                <span class="p">.</span><span class="na">setPassword</span><span class="p">(</span><span class="s">'donttellanyone'</span><span class="p">)</span>
+                <span class="p">.</span><span class="na">submit</span><span class="p">()</span>
+            <span class="nx">browser</span><span class="p">.</span><span class="na">waitForAngular</span><span class="p">()</span>
             
-            expect(browser.getLocationAbsUrl()).toMatch('/app/#!/dashboard')
-        )
+            <span class="nx">expect</span><span class="p">(</span><span class="nx">browser</span><span class="p">.</span><span class="na">getLocationAbsUrl</span><span class="p">()).</span><span class="na">toMatch</span><span class="p">(</span><span class="s">'/app/#!/dashboard'</span><span class="p">)</span>
+        <span class="p">)</span>
 
-...more tests
-}
-&lt;/pre&gt;
+<span class="p">...</span><span class="na">more</span> <span class="nx">tests</span>
+<span class="p">}</span></code></pre></figure>
 
-<span>This way we get a nice structure and a pretty neat fluent syntax in our testing scenarios. Next up is how to bootstrap your server/database before each test scenario so that you can make integration test scenarios from a consistent state every time. I'll get back to that in a future post.</span>
+<p><span>This way we get a nice structure and a pretty neat fluent syntax in our testing scenarios. Next up is how to bootstrap your server/database before each test scenario so that you can make integration test scenarios from a consistent state every time. I’ll get back to that in a future post.</span></p>
 
-
-</e2e></pre>
 
   </div><div id="disqus_thread"></div>
   <script>
@@ -227,29 +215,33 @@ describe('<e2e>', () -&gt;
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

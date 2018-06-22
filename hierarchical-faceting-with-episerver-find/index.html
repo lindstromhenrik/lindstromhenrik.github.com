@@ -57,15 +57,13 @@
   <div class="post-content e-content" itemprop="articleBody">
     <p><span>A quite common use case for facets is to show a listing of the number of documents in a result for the different categories on the site (quite common is maybe an understatement as this is often the “hello world!” of faceting). A document can occur in maybe one or more categories and this is where your search index really stands out since it doesn’t care if you have one or two categories associated with the document it will return your facet in no time anyway. Sometimes your categories have a hierarchical structure that you want to reflect in your facet. Lets say that you have documents about cars and want to have a category tree based on manufacturer and name, ie. Volvo/XC60. How can you achieve a facet where you get an aggregated count for each level in the category tree? For example:</span></p>
 
-<pre>
-Volkswagen (7)
-    Passat (5)
-    Tiguan (2)
-Volvo (10)
-    V70 (5)
-    V60 (2)
-    …
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="nf">Volkswagen</span> <span class="p">(</span><span class="m">7</span><span class="p">)</span>
+    <span class="nf">Passat</span> <span class="p">(</span><span class="m">5</span><span class="p">)</span>
+    <span class="nf">Tiguan</span> <span class="p">(</span><span class="m">2</span><span class="p">)</span>
+<span class="nf">Volvo</span> <span class="p">(</span><span class="m">10</span><span class="p">)</span>
+    <span class="nf">V70</span> <span class="p">(</span><span class="m">5</span><span class="p">)</span>
+    <span class="nf">V60</span> <span class="p">(</span><span class="m">2</span><span class="p">)</span>
+    <span class="err">…</span></code></pre></figure>
 
 <p><span>The simplest way of doing this is by associating each document with all levels for each of its categories. Then by using a terms facet when fetching your result you will get an aggregated count for each node in your category tree. Voila, there is your hierarchical facet but with just a few lines of code you can get Find to do all that dirty work of your hands and all you have to do is to pass a category string (each level separated by a ‘/’) and return a facet that parse the result and reflects the nested structure of the category tree. I will leave out the implementation details but at <a href="https://github.com/x2find/HierarchicalFacet2Find">HierarchicalFacet2Find</a> you can fetch your own copy of the code that does that work for you.</span></p>
 
@@ -73,52 +71,42 @@ Volvo (10)
 
 <p><span>Add a Hierarchy property to the document:</span></p>
 
-<pre>
-public class Document
-{
-    [Id]
-    public string Id { get; set; }
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">public</span> <span class="k">class</span> <span class="nc">Document</span>
+<span class="p">{</span>
+    <span class="p">[</span><span class="n">Id</span><span class="p">]</span>
+    <span class="k">public</span> <span class="kt">string</span> <span class="n">Id</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
 
-    public Hierarchy Hierarchy { get; set; }
-}
-</pre>
+    <span class="k">public</span> <span class="n">Hierarchy</span> <span class="n">Hierarchy</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>Set the hierarchy path:</span></p>
 
-<pre>
-document.Hierarchy = "A/B/C/D";
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">document</span><span class="p">.</span><span class="n">Hierarchy</span> <span class="p">=</span> <span class="s">"A/B/C/D"</span><span class="p">;</span></code></pre></figure>
 
 <p><span>Index and request a HierarchicalFacet when searching:</span></p>
 
-<pre>
-result = client.Search&lt;Document&gt;()
-            .HierarchicalFacetFor(x =&gt; x.Hierarchy)
-            .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">result</span> <span class="p">=</span> <span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+            <span class="p">.</span><span class="nf">HierarchicalFacetFor</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Hierarchy</span><span class="p">)</span>
+            <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>Fetch it from the result:</span></p>
 
-<pre>
-facet = result.HierarchicalFacetFor(x =&gt; x.Hierarchy)
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">facet</span> <span class="p">=</span> <span class="n">result</span><span class="p">.</span><span class="nf">HierarchicalFacetFor</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Hierarchy</span><span class="p">)</span></code></pre></figure>
 
 <p><span>Loop over the nested hierarchy paths:</span></p>
 
-<pre>
-foreach(var hierarchyPath in facet)
-{
-    hierarchyPath.Path;
-    hierarchyPath.Count;
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="k">foreach</span><span class="p">(</span><span class="kt">var</span> <span class="n">hierarchyPath</span> <span class="k">in</span> <span class="n">facet</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">hierarchyPath</span><span class="p">.</span><span class="n">Path</span><span class="p">;</span>
+    <span class="n">hierarchyPath</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span>
 
-    foreach (var subHierarchyPath in hierarchyPath)
-    {
-        subHierarchyPath.Path;
-        subHierarchyPath.Count;
-        ...
-    }
-}
-</pre>
+    <span class="k">foreach</span> <span class="p">(</span><span class="kt">var</span> <span class="n">subHierarchyPath</span> <span class="k">in</span> <span class="n">hierarchyPath</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">subHierarchyPath</span><span class="p">.</span><span class="n">Path</span><span class="p">;</span>
+        <span class="n">subHierarchyPath</span><span class="p">.</span><span class="n">Count</span><span class="p">;</span>
+        <span class="p">...</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></figure>
 
 <p><span>I hope you may find this useful when making your site awesome with EPiServer Find!</span></p>
 
@@ -143,29 +131,33 @@ foreach(var hierarchyPath in facet)
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>

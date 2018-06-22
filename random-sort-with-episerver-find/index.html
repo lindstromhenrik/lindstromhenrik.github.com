@@ -60,20 +60,16 @@
 <h2>How to use Random2Find</h2>
 <p><span>Random2Find is a pure query time extension that don’t need to be registered at startup so all you need to do is specifying  OrderRandom on your query:</span></p>
 
-<pre>
-client.Search&lt;Document&gt;()
-    .OrderRandom()
-    .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+    <span class="p">.</span><span class="nf">OrderRandom</span><span class="p">()</span>
+    <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>OrderRandom can of course also be used in conjunction with another OrderBy-clause if you want to randomly order items within a subset of ordered items:</span></p>
 
-<pre>
-client.Search&lt;Document&gt;()
-    .OrderBy(x =&gt; x.Name)
-    .ThenOrderRandom()
-    .GetResult();
-</pre>
+<figure class="highlight"><pre><code class="language-csharp" data-lang="csharp"><span class="n">client</span><span class="p">.</span><span class="n">Search</span><span class="p">&amp;</span><span class="n">lt</span><span class="p">;</span><span class="n">Document</span><span class="p">&amp;</span><span class="n">gt</span><span class="p">;()</span>
+    <span class="p">.</span><span class="nf">OrderBy</span><span class="p">(</span><span class="n">x</span> <span class="p">=&gt;</span> <span class="n">x</span><span class="p">.</span><span class="n">Name</span><span class="p">)</span>
+    <span class="p">.</span><span class="nf">ThenOrderRandom</span><span class="p">()</span>
+    <span class="p">.</span><span class="nf">GetResult</span><span class="p">();</span></code></pre></figure>
 
 <p><span>I hope you may find this useful when making your site awesome with EPiServer Find.</span></p>
 
@@ -98,29 +94,33 @@ client.Search&lt;Document&gt;()
 
       </div>
     </main><footer class="site-footer h-card">
-  <data class="u-url" href="/"></data>
-
-  <div class="wrapper">
-
-    <h2 class="footer-heading">a life in search</h2>
-
-    <div class="footer-col-wrapper">
-      <div class="footer-col footer-col-1">
-        <ul class="contact-list">
-          <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstromhenrik@gmail.com">lindstromhenrik@gmail.com</a></li></ul>
-      </div>
-
-      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
+    <data class="u-url" href="/"></data>
+  
+    <div class="wrapper">
+  
+      <h2 class="footer-heading">a life in search</h2>
+  
+      <div class="footer-col-wrapper">
+        <div class="footer-col footer-col-1" style="width: 300px;">
+            <div style="float: left; margin-right: 10px;">
+                <img class="gravatar" src="https://www.gravatar.com/avatar/3d05909857b53a5001a6c83326d203b3?s=48" style="border-radius: 50%;"/>
+            </div>
+            <div>
+                <ul class="contact-list">
+                    <li class="p-name">Henrik Lindström</li><li><a class="u-email" href="mailto:lindstrom.henrik@gmail.com">lindstrom.henrik@gmail.com</a></li></ul>
+            </div>
+        </div>
+  
+        <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">lindstromhenrik</span></a></li><li><a href="https://www.twitter.com/lindstromhenrik"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">lindstromhenrik</span></a></li></ul>
 </div>
-
-      <div class="footer-col footer-col-3">
-        <p></p>
+  
+        <div class="footer-col footer-col-3">
+          <p></p>
+        </div>
       </div>
+  
     </div>
-
-  </div>
-
-</footer>
-</body>
+  
+  </footer></body>
 
 </html>
